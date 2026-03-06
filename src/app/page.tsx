@@ -107,7 +107,7 @@ export default function Home() {
             </div>
 
             <span className="font-black tracking-tighter text-xl uppercase italic">
-              Online Shopping & Booking Centre
+              Online Shopping & Booking Centre v1
             </span>
           </div>
 
