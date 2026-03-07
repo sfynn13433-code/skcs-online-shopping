@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 // Adjust this import path if your supabase.ts is located elsewhere
-import { supabase } from "../../../../lib/supabase"; 
+import { supabase } from "@/lib/supabase"; 
 
 export async function GET(req: Request) {
   console.log("Starting Auto-Pilot Deal Hunt...");

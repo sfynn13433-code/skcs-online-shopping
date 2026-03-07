@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase"; // Assuming Supabase is set up
+import { supabase } from "@/lib/supabase";
 
 export async function GET(req: Request) {
   // Security check: ensure the request is actually coming from your Vercel Cron job
