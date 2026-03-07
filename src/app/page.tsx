@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
+// Fix: Updated to the relative path so Next.js finds it perfectly
+import AIshoppingAssistant from "../components/AIshoppingAssistant"; 
 
 interface UserProfile {
   id: string;
@@ -185,7 +187,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PRODUCTS */}
+      {/* AI SHOPPING ASSISTANT - NEW SECTION */}
+      <section className="max-w-7xl mx-auto px-6 py-10">
+        <AIshoppingAssistant />
+      </section>
+
+      {/* PRODUCTS - FEATURED DEALS */}
       <section className="max-w-7xl mx-auto px-6 py-20 min-h-[600px]">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl font-black tracking-tight uppercase">
@@ -252,6 +259,120 @@ export default function Home() {
             })}
           </div>
         )}
+      </section>
+
+      {/* ========== ALIEXPRESS DEALS SECTION ========== */}
+      <section className="py-16 bg-black border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-black tracking-tight uppercase mb-4">
+            AliExpress <span className="text-cyan-500">Deals</span>
+          </h2>
+          <p className="text-neutral-400 max-w-2xl mx-auto mb-10">
+            Hand‑picked offers with your exclusive tracking ID. Click, shop, and save!
+          </p>
+
+          {/* Main category buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <a
+              href="https://s.click.aliexpress.com/e/_c3ElbFoT"
+              target="_blank"
+              rel="noopener sponsored"
+              className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg"
+            >
+              Higher Commission
+            </a>
+            <a
+              href="https://s.click.aliexpress.com/e/_c39QWNkL"
+              target="_blank"
+              rel="noopener sponsored"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg"
+            >
+              Hot Deals
+            </a>
+            <a
+              href="https://s.click.aliexpress.com/e/_c4PyOiIx"
+              target="_blank"
+              rel="noopener sponsored"
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg"
+            >
+              Featured Products
+            </a>
+          </div>
+
+          {/* Choice Day – regional deals */}
+          <div className="mb-10">
+            <h3 className="text-2xl font-bold mb-6 text-cyan-400 flex items-center justify-center gap-2">
+              <span className="text-3xl">🔥</span> Choice Day – Shop by Region
+            </h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              <a
+                href="https://s.click.aliexpress.com/e/_c2RF8vmf"
+                target="_blank"
+                rel="noopener sponsored"
+                className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all"
+              >
+                South Africa
+              </a>
+              <a
+                href="https://s.click.aliexpress.com/e/_c4axtOe3"
+                target="_blank"
+                rel="noopener sponsored"
+                className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all"
+              >
+                Mexico
+              </a>
+              <a
+                href="https://s.click.aliexpress.com/e/_c2v0WVLt"
+                target="_blank"
+                rel="noopener sponsored"
+                className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all"
+              >
+                Brazil
+              </a>
+              <a
+                href="https://s.click.aliexpress.com/e/_c3PKWdkL"
+                target="_blank"
+                rel="noopener sponsored"
+                className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all"
+              >
+                United States
+              </a>
+              <a
+                href="https://s.click.aliexpress.com/e/_c4aeJNbp"
+                target="_blank"
+                rel="noopener sponsored"
+                className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all"
+              >
+                Korea
+              </a>
+              <a
+                href="https://s.click.aliexpress.com/e/_c3rmPpKn"
+                target="_blank"
+                rel="noopener sponsored"
+                className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all"
+              >
+                Global
+              </a>
+            </div>
+          </div>
+
+          {/* Smart home page link */}
+          <div className="mt-8">
+            <a
+              href="https://s.click.aliexpress.com/e/_c3a07dG3"
+              target="_blank"
+              rel="noopener sponsored"
+              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider transition-all border border-white/20"
+            >
+              <span>🏠</span> AliExpress Home (Smart Links)
+            </a>
+          </div>
+
+          {/* Optional small note about your tracking ID */}
+          <p className="text-xs text-neutral-600 mt-10">
+            All links use your personal tracking ID: <span className="text-cyan-500 font-mono">SKCS</span>
+          </p>
+        </div>
       </section>
 
       {/* FOOTER */}
