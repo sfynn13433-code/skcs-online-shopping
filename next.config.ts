@@ -1,18 +1,13 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  images: {
-    dangerouslyAllowSVG: true, // Needed for placehold.co
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "placehold.co",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      }
-    ],
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  turbopack: {
+    resolveAlias: {
+      // Map @ to src (most common pattern)
+      '@': './src',
+      // More granular if needed
+      '@/lib': './src/lib',
+      '@/lib/': './src/lib/',
+    },
   },
 };
 
