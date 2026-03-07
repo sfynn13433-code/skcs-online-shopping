@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "../../../../lib/supabase"; // Adjust path if needed
+import { supabase } from "@/lib/supabase";
 
 export async function GET(req: Request) {
   // 1. Grab the URL parameters the frontend sent us
