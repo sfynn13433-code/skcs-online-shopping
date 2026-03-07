@@ -72,7 +72,7 @@ const laptopOptions: LaptopOption[] = [
   },
 ];
 
-export default function AIShoppingAssistant() {
+export default function AIshoppingAssistant() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
