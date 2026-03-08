@@ -1,105 +1,59 @@
+// src/app/bookings/page.tsx
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 
-const categories = [
-  "All",
-  "Electronics",
-  "Gaming",
-  "Fashion",
-  "Home",
-  "Fitness",
-  "Automotive",
-  "Toys",
-  "Tools"
-];
+// Define a type for your booking data – adjust fields as needed
+interface Booking {
+  id: string;
+  title: string;
+  date?: string;
+  status?: string;
+  // add other fields you expect from the API
+}
 
-export default function ProductGrid({ products = [] }: { products?: any[] }) {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+export default function BookingsPage() {
+  const [bookings, setBookings] = useState<Booking[]>([]); // ✅ properly typed
+  const [loading, setLoading] = useState(true);
 
-  // Guard against undefined products – default to empty array
-  const safeProducts = products || [];
+  useEffect(() => {
+    fetch('/api/bookings') // adjust endpoint as needed
+      .then(res => res.json())
+      .then((data: unknown) => {
+        // Ensure data is an array and each item matches Booking shape
+        if (Array.isArray(data)) {
+          setBookings(data as Booking[]);
+        } else {
+          setBookings([]);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch bookings:', err);
+        setBookings([]); // fallback
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-  const filteredProducts =
-    selectedCategory === "All"
-      ? safeProducts
-      : safeProducts.filter((p: any) => p.category === selectedCategory);
+  if (loading) {
+    return <div className="text-white p-10">Loading bookings...</div>;
+  }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-
-      {/* CATEGORY FILTER */}
-      <div className="flex flex-wrap gap-3 mb-10 justify-center">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-              selectedCategory === cat
-                ? "bg-cyan-500 text-black"
-                : "bg-neutral-900 hover:bg-neutral-800"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-
-        {/* BOOKINGS BUTTON */}
-        <Link
-          href="/bookings"
-          className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-sm font-semibold"
-        >
-          Bookings <span className="text-cyan-400 ml-1">(Soon)</span>
-        </Link>
-      </div>
-
-      {/* PRODUCT GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-
-        {filteredProducts.map((p: any, index: number) => (
-          <div
-            key={p.id ?? `${p.title}-${index}`}
-            className="group bg-neutral-900/40 border border-white/5 rounded-[2rem] p-5 hover:bg-neutral-900/80 hover:border-cyan-500/50 transition-all duration-500 flex flex-col justify-between"
-          >
-            <div>
-              {/* PRODUCT IMAGE */}
-              <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-5 bg-neutral-800">
-                <img
-                  src={p.image}
-                  alt={p.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-
-              {/* TITLE */}
-              <h3 className="font-semibold text-lg mb-2">{p.title}</h3>
-
-              {/* STORE */}
-              <p className="text-xs text-neutral-400 mb-3 uppercase">
-                {p.store}
-              </p>
-
-              {/* PRICE */}
-              <p className="text-cyan-400 font-bold text-lg">{p.price}</p>
+    <div className="max-w-7xl mx-auto px-6 py-10 text-white">
+      <h1 className="text-3xl font-bold mb-6">Your Bookings</h1>
+      {bookings.length === 0 ? (
+        <p>No bookings found.</p>
+      ) : (
+        <div className="grid gap-4">
+          {bookings.map((booking) => (
+            <div key={booking.id} className="bg-neutral-900 p-4 rounded">
+              {/* Render booking details – example: */}
+              <p className="font-bold">{booking.title}</p>
+              <p className="text-sm text-neutral-400">{booking.date}</p>
             </div>
-
-            {/* BUY BUTTON */}
-            <a
-              href={`/api/track-click?title=${encodeURIComponent(
-                p.title
-              )}&store=${encodeURIComponent(p.store)}&url=${encodeURIComponent(
-                p.url || p.affiliate_url || ''
-              )}`}
-              target="_blank"
-              className="mt-5 block text-center bg-cyan-500 text-black font-semibold py-2 rounded-xl hover:bg-cyan-400 transition"
-            >
-              View Deal
-            </a>
-          </div>
-        ))}
-
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
