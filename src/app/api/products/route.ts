@@ -8,10 +8,9 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    // Fetch all products from the 'products' table
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select("id, title, price, discount_price, created_at")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -22,8 +21,16 @@ export async function GET() {
       );
     }
 
-    // Data is returned as-is – your frontend expects 'affiliate_url'
-    return NextResponse.json(data);
+    // Convert database fields → frontend format
+    const products = data.map((product) => ({
+      id: product.id,
+      name: product.title,
+      price: product.discount_price ?? product.price,
+      original_price: product.price,
+      affiliate_url: "#", // placeholder until affiliate links are added
+    }));
+
+    return NextResponse.json(products);
   } catch (err) {
     console.error("Server error:", err);
     return NextResponse.json(
