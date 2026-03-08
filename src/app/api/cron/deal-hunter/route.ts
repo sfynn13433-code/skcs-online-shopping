@@ -1,12 +1,27 @@
 import { NextResponse } from "next/server";
-// Adjust this import path if your supabase.ts is located elsewhere
-import { supabase } from "../../../../lib/supabase"; 
+import { createClient } from '@supabase/supabase-js';
 
 export async function GET(req: Request) {
   console.log("Starting Auto-Pilot Deal Hunt...");
 
+  // Read environment variables inside the handler (safe for build time)
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  // Validate that both are present
+  if (!supabaseUrl || !supabaseServiceKey) {
+    console.error("Missing Supabase URL or service role key");
+    return NextResponse.json(
+      { success: false, error: "Server configuration error" },
+      { status: 500 }
+    );
+  }
+
+  // Create the Supabase admin client now – only when the route runs
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
   try {
-    // 1. Simulated raw deals fetched from marketplace APIs (Amazon, Takealot, AliExpress)
+    // 1. Simulated raw deals fetched from marketplace APIs
     const rawDeals = [
       { 
         id: '1', 
@@ -34,13 +49,13 @@ export async function GET(req: Request) {
       },
     ];
 
-    // 2. The AI/Logic Filter: Must be at least 20% off AND have a rating of 4.0 or higher
+    // 2. AI/Logic Filter: at least 20% off AND rating ≥ 4.0
     const verifiedDeals = rawDeals.filter(deal => {
       const discountPercentage = ((deal.original_price - deal.current_price) / deal.original_price) * 100;
       return discountPercentage >= 20 && deal.rating >= 4.0;
     });
 
-    // 3. Push the verified deals directly to your Supabase database
+    // 3. Push verified deals to Supabase (daily_deals table)
     const { data, error } = await supabase
       .from('daily_deals')
       .upsert(verifiedDeals, { onConflict: 'id' }); 
