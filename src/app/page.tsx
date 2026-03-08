@@ -19,6 +19,7 @@ interface Product {
   store: string;
   image: string;
   affiliate_url: string;
+  category?: string; // Added category field
 }
 
 export default function Home() {
@@ -102,13 +103,27 @@ export default function Home() {
     }
   }
 
+  // Filter products based on search query
   const filteredProducts = (products || []).filter((p) =>
     p.title.toLowerCase().includes(debouncedQuery.toLowerCase())
   );
 
+  // Group filtered products by category
+  const groupedProducts = filteredProducts.reduce<Record<string, Product[]>>((acc, product) => {
+    const category = product.category || "Other";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {});
+
+  // Optional: sort categories alphabetically
+  const sortedCategories = Object.keys(groupedProducts).sort();
+
   return (
     <main className="bg-black min-h-screen text-white pt-20">
-      {/* NAVBAR (unchanged) */}
+      {/* NAVBAR */}
       <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -133,7 +148,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* HERO (unchanged) */}
+      {/* HERO */}
       <section className="relative w-full h-[70vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image src="/hero.jpg" alt="SKCS Online Shopping" fill className="object-cover object-center opacity-90" priority />
@@ -176,40 +191,50 @@ export default function Home() {
             <p className="text-xl font-bold">No products match your search</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {filteredProducts.map((p) => {
-              const storeBadgeClass = `text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded ${getStoreColor(p.store)}`;
-              return (
-                <div key={p.id} className="group bg-neutral-900/40 border border-white/5 rounded-[2rem] p-5 hover:bg-neutral-900/80 hover:border-cyan-500/50 transition-all duration-500 flex flex-col justify-between">
-                  <div>
-                    <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-5 bg-neutral-800">
-                      <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                    </div>
-                    <span className={storeBadgeClass}>{p.store}</span>
-                    <h3 className="font-bold text-base mb-2 line-clamp-2 mt-2">{p.title}</h3>
-                    <p className="text-2xl font-black text-white">{p.price}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3 mt-6">
-                    <button className="bg-white/5 border border-white/10 py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-cyan-500 hover:text-black transition-all">Track</button>
-
-                    {/* ✅ FIXED: Buy Now button now calls tracking API */}
-                    <a
-                      href={`/api/track-click?title=${encodeURIComponent(p.title)}&store=${encodeURIComponent(p.store)}&url=${encodeURIComponent(p.affiliate_url)}`}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
-                      className="bg-cyan-500 text-black py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-white transition-all text-center flex items-center justify-center"
-                    >
-                      Buy Now
-                    </a>
-                  </div>
+          // Render products grouped by category
+          <div className="space-y-16">
+            {sortedCategories.map((category) => (
+              <div key={category}>
+                <h3 className="text-2xl font-bold mb-6 border-b border-white/10 pb-2 inline-block">
+                  {category}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {groupedProducts[category].map((p, index) => {
+                    // Add fallback for store display: if p.store is falsy or "Unknown", show "Marketplace"
+                    const displayStore = p.store && p.store !== "Unknown" ? p.store : "Marketplace";
+                    const storeBadgeClass = `text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded ${getStoreColor(displayStore)}`;
+                    return (
+                      <div key={p.id || `product-${category}-${index}`} className="group bg-neutral-900/40 border border-white/5 rounded-[2rem] p-5 hover:bg-neutral-900/80 hover:border-cyan-500/50 transition-all duration-500 flex flex-col justify-between">
+                        <div>
+                          <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-5 bg-neutral-800">
+                            <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                          </div>
+                          <span className={storeBadgeClass}>{displayStore}</span>
+                          <h3 className="font-bold text-base mb-2 line-clamp-2 mt-2">{p.title}</h3>
+                          <p className="text-2xl font-black text-white">{p.price}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 mt-6">
+                          <button className="bg-white/5 border border-white/10 py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-cyan-500 hover:text-black transition-all">Track</button>
+                          <a
+                            href={`/api/track-click?title=${encodeURIComponent(p.title)}&store=${encodeURIComponent(displayStore)}&url=${encodeURIComponent(p.affiliate_url)}`}
+                            target="_blank"
+                            rel="noopener noreferrer sponsored"
+                            className="bg-cyan-500 text-black py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-white transition-all text-center flex items-center justify-center"
+                          >
+                            Buy Now
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
       </section>
 
-      {/* ALIEXPRESS DEALS SECTION (unchanged) */}
+      {/* ALIEXPRESS DEALS SECTION */}
       <section className="py-16 bg-black border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-black tracking-tight uppercase mb-4">AliExpress <span className="text-cyan-500">Deals</span></h2>
@@ -237,7 +262,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER (unchanged) */}
+      {/* FOOTER */}
       <footer className="bg-neutral-950 border-t border-white/10 pt-20 pb-10">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
           <div className="col-span-1 md:col-span-2">
