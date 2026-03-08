@@ -5,15 +5,28 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+// Log warning instead of crashing build
 if (!supabaseUrl || !supabaseKey) {
-  console.error("Missing Supabase environment variables");
+  console.warn("Missing Supabase environment variables");
 }
 
-const supabase = createClient(supabaseUrl!, supabaseKey!);
+// Create client safely (prevents build failure)
+const supabase =
+  supabaseUrl && supabaseKey
+    ? createClient(supabaseUrl, supabaseKey)
+    : null;
 
 export async function GET() {
   try {
     console.log("Fetching products from Supabase...");
+
+    // Extra safety check
+    if (!supabase) {
+      return NextResponse.json(
+        { error: "Supabase configuration missing" },
+        { status: 500 }
+      );
+    }
 
     const { data, error } = await supabase
       .from("products")
@@ -31,7 +44,7 @@ export async function GET() {
     console.log(`Found ${data?.length || 0} products`);
 
     const formatPrice = (price: number) => {
-      return `R ${price.toLocaleString('en-ZA')}`;
+      return `R ${price.toLocaleString("en-ZA")}`;
     };
 
     const products = (data || []).map((product) => ({
