@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://skcs.co.za/sitemap.xml
+
+Sitemap: https://www.skcs.co.za/sitemap.xml

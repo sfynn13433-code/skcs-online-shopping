@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
-// Fix: Updated to the relative path so Next.js finds it perfectly
-import AIshoppingAssistant from "../components/AIshoppingAssistant"; 
+import AIshoppingAssistant from "../components/AIshoppingAssistant";
 
 interface UserProfile {
   id: string;
@@ -14,12 +13,12 @@ interface UserProfile {
 }
 
 interface Product {
-  id: number;
+  id: string;           // Changed from number to string (matches Supabase UUID)
   title: string;
-  price: string;
+  price: string;        // Kept as string for display (API returns formatted price)
   store: string;
   image: string;
-  affiliateLink: string;
+  affiliate_url: string;
 }
 
 export default function Home() {
@@ -94,7 +93,8 @@ export default function Home() {
     }
   }
 
-  const filteredProducts = products.filter((p) =>
+  // Safeguard: if products is ever null/undefined, default to empty array
+  const filteredProducts = (products || []).filter((p) =>
     p.title.toLowerCase().includes(debouncedQuery.toLowerCase())
   );
 
@@ -187,12 +187,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* AI SHOPPING ASSISTANT - NEW SECTION */}
+      {/* AI SHOPPING ASSISTANT */}
       <section className="max-w-7xl mx-auto px-6 py-10">
         <AIshoppingAssistant />
       </section>
 
-      {/* PRODUCTS - FEATURED DEALS */}
+      {/* FEATURED DEALS */}
       <section className="max-w-7xl mx-auto px-6 py-20 min-h-[600px]">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl font-black tracking-tight uppercase">
@@ -246,7 +246,7 @@ export default function Home() {
                     </button>
 
                     <a
-                      href={p.affiliateLink}
+                      href={p.affiliate_url}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
                       className="bg-cyan-500 text-black py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-white transition-all text-center flex items-center justify-center"
@@ -261,7 +261,7 @@ export default function Home() {
         )}
       </section>
 
-      {/* ========== ALIEXPRESS DEALS SECTION ========== */}
+      {/* ALIEXPRESS DEALS SECTION */}
       <section className="py-16 bg-black border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-black tracking-tight uppercase mb-4">
