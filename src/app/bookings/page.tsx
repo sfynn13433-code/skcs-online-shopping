@@ -15,13 +15,16 @@ const categories = [
   "Tools"
 ];
 
-export default function ProductGrid({ products }: any) {
+export default function ProductGrid({ products = [] }: { products?: any[] }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Guard against undefined products – default to empty array
+  const safeProducts = products || [];
 
   const filteredProducts =
     selectedCategory === "All"
-      ? products
-      : products.filter((p: any) => p.category === selectedCategory);
+      ? safeProducts
+      : safeProducts.filter((p: any) => p.category === selectedCategory);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
@@ -86,7 +89,7 @@ export default function ProductGrid({ products }: any) {
               href={`/api/track-click?title=${encodeURIComponent(
                 p.title
               )}&store=${encodeURIComponent(p.store)}&url=${encodeURIComponent(
-                p.url
+                p.url || p.affiliate_url || ''
               )}`}
               target="_blank"
               className="mt-5 block text-center bg-cyan-500 text-black font-semibold py-2 rounded-xl hover:bg-cyan-400 transition"
