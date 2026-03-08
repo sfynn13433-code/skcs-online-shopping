@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from '@supabase/supabase-js';
 
+// Add this line to prevent build-time execution and caching
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   console.log("Starting Auto-Pilot Deal Hunt...");
 
-  // Read environment variables inside the handler (safe for build time)
+  // Read environment variables inside the handler
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -17,7 +20,7 @@ export async function GET(req: Request) {
     );
   }
 
-  // Create the Supabase admin client now – only when the route runs
+  // Create the Supabase admin client
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
   try {
@@ -31,22 +34,7 @@ export async function GET(req: Request) {
         link: "https://www.takealot.com", 
         rating: 4.8 
       },
-      { 
-        id: '2', 
-        title: "Cheap Unbranded Watch", 
-        original_price: 20, 
-        current_price: 18, 
-        link: "https://www.aliexpress.com", 
-        rating: 2.1 
-      },
-      { 
-        id: '3', 
-        title: "Sony WH-1000XM5 Headphones", 
-        original_price: 400, 
-        current_price: 250, 
-        link: "https://www.amazon.com", 
-        rating: 4.9 
-      },
+      // ... (rest of your deals array)
     ];
 
     // 2. AI/Logic Filter: at least 20% off AND rating ≥ 4.0
