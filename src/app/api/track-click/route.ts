@@ -1,33 +1,45 @@
-import { NextResponse } from "next/server";
-import { supabase } from "../../../lib/supabase";
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-export async function GET(req: Request) {
-  // 1. Grab the URL parameters the frontend sent us
-  const { searchParams } = new URL(req.url);
-  const targetUrl = searchParams.get("url");
-  const productTitle = searchParams.get("title") || "Unknown Product";
-  const storeName = searchParams.get("store") || "Unknown Store";
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const title = searchParams.get('title');
+  const store = searchParams.get('store');
+  const url = searchParams.get('url');
 
-  if (!targetUrl) {
-    return NextResponse.json({ error: "Missing destination URL" }, { status: 400 });
-  }
+  // Default fallback URL (homepage)
+  const fallbackUrl = new URL('/', request.url).toString();
 
+  // Always try to log the click, even if parameters are missing or URL is invalid
   try {
-    // 2. Log the click into your Supabase database silently in the background
-    await supabase.from('click_analytics').insert([
-      {
-        product_title: productTitle,
-        store_name: storeName,
-        original_link: targetUrl
-      }
-    ]);
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
-    // 3. Instantly redirect the user to the actual store (Amazon, Takealot, etc.)
-    return NextResponse.redirect(targetUrl);
-
-  } catch (error) {
-    console.error("Click tracking failed:", error);
-    // Even if tracking fails, we still send the user to the store so you don't lose the commission!
-    return NextResponse.redirect(targetUrl);
+    // Insert into the correct table: click_analytics
+    await supabase.from('click_analytics').insert({
+      product_title: title || 'Unknown',
+      store_name: store || 'Unknown',
+      original_link: url || fallbackUrl,
+      clicked_at: new Date(), // will be converted to ISO string
+    });
+  } catch (err) {
+    // Log error but continue – we still want to redirect the user
+    console.error('Failed to log click to Supabase:', err);
   }
+
+  // Determine where to redirect
+  let redirectUrl = fallbackUrl;
+
+  if (url && url !== '#') {
+    redirectUrl = url;
+    // Ensure protocol (if missing, prepend https://)
+    if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
+      redirectUrl = 'https://' + redirectUrl;
+    }
+  }
+
+  // Perform the redirect (302 temporary redirect)
+  return NextResponse.redirect(redirectUrl, 302);
 }

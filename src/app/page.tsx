@@ -191,7 +191,16 @@ export default function Home() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 mt-6">
                     <button className="bg-white/5 border border-white/10 py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-cyan-500 hover:text-black transition-all">Track</button>
-                    <a href={p.affiliate_url} target="_blank" rel="noopener noreferrer sponsored" className="bg-cyan-500 text-black py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-white transition-all text-center flex items-center justify-center">Buy Now</a>
+
+                    {/* ✅ FIXED: Buy Now button now calls tracking API */}
+                    <a
+                      href={`/api/track-click?title=${encodeURIComponent(p.title)}&store=${encodeURIComponent(p.store)}&url=${encodeURIComponent(p.affiliate_url)}`}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="bg-cyan-500 text-black py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-white transition-all text-center flex items-center justify-center"
+                    >
+                      Buy Now
+                    </a>
                   </div>
                 </div>
               );
