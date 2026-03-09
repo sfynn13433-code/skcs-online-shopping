@@ -22,7 +22,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   // 1. Try the map first
   let categoryName = categoryNameMap[slug]
 
-  // 2. If map fails, try capitalizing the first letter (e.g., 'electronics' -> 'Electronics')
+  // 2. If map fails, try capitalizing the first letter
   if (!categoryName) {
     const capitalized = slug.charAt(0).toUpperCase() + slug.slice(1)
     console.log('Trying capitalized version:', capitalized)
@@ -59,7 +59,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         get(name: string) {
           return cookieStore.get(name)?.value
         },
-        // We only need `get` in this server component; set/remove can be stubbed
         set() {},
         remove() {},
       },
@@ -117,14 +116,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                     <button className="bg-white/5 border border-white/10 py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-cyan-500 hover:text-black transition-all">
                       Track
                     </button>
-                    <a
-                      href={`/api/track-click?title=${encodeURIComponent(product.title)}&store=${encodeURIComponent(displayStore)}&url=${encodeURIComponent(product.affiliate_url)}`}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
+                    
+                    {/* CHANGED: This now routes to your comparison page! */}
+                    <Link
+                      href={`/product/${product.product_group}`}
                       className="bg-cyan-500 text-black py-3 rounded-xl text-[10px] font-bold uppercase hover:bg-white transition-all text-center flex items-center justify-center"
                     >
-                      Buy Now
-                    </a>
+                      Compare Prices
+                    </Link>
+                    
                   </div>
                 </div>
               );
