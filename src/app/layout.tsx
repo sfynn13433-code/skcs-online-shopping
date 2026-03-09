@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Navbar from "../components/Navbar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,9 +27,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`
+          ${geistSans.variable} ${geistMono.variable} antialiased
+          min-h-screen flex flex-col
+        `}
       >
-        {children}
+        <Navbar />
+        <main className="pt-20">{children}</main> {/* pt-20 matches navbar height */}
+        {/* Optional footer – uncomment when ready */}
+        {/* <footer className="bg-gray-800 text-white py-6 mt-auto">
+          <div className="max-w-7xl mx-auto px-4 text-center">
+            © {new Date().getFullYear()} SKCS Online Shopping
+          </div>
+        </footer> */}
       </body>
     </html>
   );

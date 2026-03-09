@@ -1,44 +1,91 @@
-import Link from 'next/link';
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { supabase } from "../lib/supabase";
+
+interface UserProfile {
+  id: string;
+  full_name: string;
+  tier?: string;
+}
 
 export default function Navbar() {
-  return (
-    <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo / Brand Name */}
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="text-2xl font-bold text-blue-600 tracking-tight">
-              SKCS <span className="text-gray-900">Online Shopping</span>
-            </Link>
-          </div>
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
-          {/* Global Search Bar */}
-          <div className="flex-1 max-w-2xl px-8 hidden md:block">
-            <div className="relative">
-              <input
-                type="text"
-                className="w-full bg-gray-100 border border-transparent text-gray-900 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
-                placeholder="Search across global and local stores..."
-              />
-              <button className="absolute right-2 top-2 text-gray-500 hover:text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+  useEffect(() => {
+    const getProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        if (!error) setProfile(data);
+      }
+      setLoadingProfile(false);
+    };
+    getProfile();
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setProfile(null);
+    window.location.reload();
+  };
+
+  return (
+    <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        {/* Logo / Brand */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-black text-xs shadow-lg shadow-cyan-500/20 text-white">
+            SKCS
+          </div>
+          <span className="font-black tracking-tighter text-xl uppercase italic">
+            Online Shopping & Booking Centre
+          </span>
+        </div>
+
+        {/* Right side: auth buttons */}
+        <div className="flex items-center gap-6">
+          {loadingProfile ? (
+            <div className="w-4 h-4 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+          ) : profile ? (
+            <div className="flex items-center gap-4">
+              <Link
+                href="/watchlist"
+                className="text-xs text-white font-bold bg-white/10 px-4 py-2 rounded-full hover:bg-cyan-500 hover:text-black transition-all"
+              >
+                My List
+              </Link>
+              <button
+                onClick={handleSignOut}
+                className="text-xs text-neutral-400 hover:text-white transition-all"
+              >
+                Sign Out
               </button>
             </div>
-          </div>
-
-          {/* Right side links */}
-          <div className="flex items-center space-x-4">
-            <Link href="/categories" className="text-gray-600 hover:text-blue-600 font-medium">
-              Categories
-            </Link>
-            <Link href="/deals" className="text-gray-600 hover:text-blue-600 font-medium">
-              Daily Deals
-            </Link>
-          </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link
+                href="/signin"
+                className="text-sm font-medium hover:text-cyan-400 transition"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-cyan-400 hover:text-white transition-all shadow-lg"
+              >
+                Join Now
+              </Link>
+            </div>
+          )}
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
