@@ -1,4 +1,4 @@
-import { streamText, CoreMessage } from 'ai';
+import { streamText } from 'ai';
 import { google } from '@ai-sdk/google';
 import { groq } from '@ai-sdk/groq';
 import { cohere } from '@ai-sdk/cohere';
@@ -23,7 +23,7 @@ const providers = [
 
 export async function POST(req: Request) {
   try {
-    const { messages }: { messages: CoreMessage[] } = await req.json();
+    const { messages }: { messages: any[] } = await req.json();
 
     for (const provider of providers) {
       try {
