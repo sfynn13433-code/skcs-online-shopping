@@ -19,7 +19,7 @@ export default function Home() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
-  // Define categories – you can later fetch counts from Supabase if you want
+  // Define categories
   const categories = [
     { name: "Electronics", slug: "electronics", icon: "💻", count: 12 },
     { name: "Fashion", slug: "fashion", icon: "👕", count: 8 },
@@ -41,6 +41,7 @@ export default function Home() {
       }
       setLoadingProfile(false);
     };
+    
     getProfile();
   }, []);
 
@@ -57,7 +58,7 @@ export default function Home() {
 
   return (
     <main className="bg-black min-h-screen text-white">
-      {/* HERO - full screen with full image visible (no cropping) */}
+      {/* HERO - full screen with full image visible */}
       <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-black">
         <div className="absolute inset-0 z-0">
           <Image
@@ -97,7 +98,7 @@ export default function Home() {
       <BookingSection />
 
       {/* SHOP BY CATEGORY */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
+      <section className="max-w-7xl mx-auto px-6 py-10">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl font-black tracking-tight uppercase">
             Shop by <span className="text-cyan-500">Category</span>
@@ -123,7 +124,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ALIEXPRESS DEALS SECTION (optional - you can keep or remove) */}
+      {/* FEATURED CATEGORY BANNER */}
+      <section className="max-w-7xl mx-auto px-6 py-10">
+        <div className="relative w-full rounded-[2rem] overflow-hidden bg-gradient-to-r from-cyan-900 to-black border border-white/10 p-10 md:p-16 flex flex-col md:flex-row items-center justify-between shadow-2xl">
+          <div className="relative z-10 max-w-xl text-center md:text-left mb-8 md:mb-0">
+            <span className="text-cyan-400 font-bold tracking-widest uppercase text-sm mb-4 block">
+              Featured Category
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
+              Level Up Your Setup
+            </h2>
+            <p className="text-neutral-300 mb-8 text-lg">
+              Compare prices on the latest consoles, accessories, and top-tier PC components from global sellers.
+            </p>
+            <Link
+              href="/category/gaming"
+              className="inline-block bg-cyan-500 text-black px-8 py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-white transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]"
+            >
+              Shop Gaming
+            </Link>
+          </div>
+          
+          <div className="relative z-10 text-9xl drop-shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500">
+            🎮
+          </div>
+          
+          {/* Abstract background glow */}
+          <div className="absolute right-0 bottom-0 w-96 h-96 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        </div>
+      </section>
+
+      {/* ALIEXPRESS DEALS SECTION */}
       <section className="py-16 bg-black border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-3xl font-black tracking-tight uppercase mb-4">
@@ -133,37 +164,15 @@ export default function Home() {
             Hand‑picked offers with your exclusive tracking ID. Click, shop, and save!
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <a
-              href="https://s.click.aliexpress.com/e/_c3ElbFoT"
-              target="_blank"
-              rel="noopener sponsored"
-              className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg"
-            >
-              Higher Commission
-            </a>
-            <a
-              href="https://s.click.aliexpress.com/e/_c39QWNkL"
-              target="_blank"
-              rel="noopener sponsored"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg"
-            >
-              Hot Deals
-            </a>
-            <a
-              href="https://s.click.aliexpress.com/e/_c4PyOiIx"
-              target="_blank"
-              rel="noopener sponsored"
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg"
-            >
-              Featured Products
-            </a>
+            <a href="https://s.click.aliexpress.com/e/_c3ElbFoT" target="_blank" rel="noopener sponsored" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg">Higher Commission</a>
+            <a href="https://s.click.aliexpress.com/e/_c39QWNkL" target="_blank" rel="noopener sponsored" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg">Hot Deals</a>
+            <a href="https://s.click.aliexpress.com/e/_c4PyOiIx" target="_blank" rel="noopener sponsored" className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg">Featured Products</a>
           </div>
           <div className="mb-10">
             <h3 className="text-2xl font-bold mb-6 text-cyan-400 flex items-center justify-center gap-2">
               <span className="text-3xl">🔥</span> Choice Day – Shop by Region
             </h3>
             <div className="flex flex-wrap justify-center gap-3">
-              {/* Region links remain unchanged */}
               <a href="https://s.click.aliexpress.com/e/_c2RF8vmf" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">South Africa</a>
               <a href="https://s.click.aliexpress.com/e/_c4axtOe3" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Mexico</a>
               <a href="https://s.click.aliexpress.com/e/_c2v0WVLt" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Brazil</a>
@@ -173,12 +182,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-8">
-            <a
-              href="https://s.click.aliexpress.com/e/_c3a07dG3"
-              target="_blank"
-              rel="noopener sponsored"
-              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider transition-all border border-white/20"
-            >
+            <a href="https://s.click.aliexpress.com/e/_c3a07dG3" target="_blank" rel="noopener sponsored" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider transition-all border border-white/20">
               <span>🏠</span> AliExpress Home (Smart Links)
             </a>
           </div>
@@ -188,7 +192,59 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER (unchanged) */}
+      {/* SOVRN NETWORK DEALS SECTION */}
+      <section className="py-16 bg-black border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-black tracking-tight uppercase mb-4">
+            Sovrn <span className="text-cyan-500">Network Deals</span>
+          </h2>
+          <p className="text-neutral-400 max-w-2xl mx-auto mb-10">
+            Hand‑picked premium offers with your exclusive tracking ID. Click, shop, and save!
+          </p>
+          
+          {/* Top Deal Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">
+              Top Sellers
+            </a>
+            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">
+              Exclusive Offers
+            </a>
+            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">
+              Tech & Electronics
+            </a>
+          </div>
+
+          {/* Department Shopping */}
+          <div className="mb-10">
+            <h3 className="text-2xl font-bold mb-6 text-cyan-400 flex items-center justify-center gap-2">
+              <span className="text-3xl">🛒</span> Shop Top Categories
+            </h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Home & Furniture</a>
+              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Toys & Games</a>
+              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Fashion & Clothing</a>
+              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Sports & Outdoors</a>
+              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Beauty & Grooming</a>
+              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Everyday Essentials</a>
+            </div>
+          </div>
+
+          {/* Smart Link Home */}
+          <div className="mt-8">
+            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider transition-all border border-white/20">
+              <span>🏠</span> Sovrn Home (Smart Links)
+            </a>
+          </div>
+
+          {/* Tracking ID Footer */}
+          <p className="text-xs text-neutral-600 mt-10">
+            All links use your personal tracking ID: <span className="text-cyan-500 font-mono">SKCS</span>
+          </p>
+        </div>
+      </section>
+
+      {/* FOOTER */}
       <footer className="bg-neutral-950 border-t border-white/10 pt-20 pb-10">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
           <div className="col-span-1 md:col-span-2">
@@ -210,14 +266,8 @@ export default function Home() {
           <div>
             <h4 className="font-bold text-white mb-6 uppercase tracking-widest text-xs">Stay Updated</h4>
             <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Email"
-                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm outline-none focus:border-cyan-500 flex-grow"
-              />
-              <button className="bg-white text-black px-4 py-2 rounded-lg text-xs font-bold hover:bg-cyan-500 transition">
-                Join
-              </button>
+              <input type="email" placeholder="Email" className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm outline-none focus:border-cyan-500 flex-grow" />
+              <button className="bg-white text-black px-4 py-2 rounded-lg text-xs font-bold hover:bg-cyan-500 transition">Join</button>
             </div>
           </div>
         </div>

@@ -8,13 +8,24 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '*.aliexpress-media.com',
+        port: '',
+        pathname: '/**',
+      },
+      // Added Amazon images!
+      {
+        protocol: 'https',
+        hostname: '*.media-amazon.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   turbopack: {
     resolveAlias: {
-      // Map @ to src (most common pattern)
       '@': './src',
-      // More granular if needed
       '@/lib': './src/lib',
       '@/lib/': './src/lib/',
     },
