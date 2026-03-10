@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       try {
         console.log(`Trying provider: ${provider.name}`);
         const result = await streamText({
-          model: provider.model(),
+          model: provider.model() as any,
           messages,
           temperature: 0.7,
         });
