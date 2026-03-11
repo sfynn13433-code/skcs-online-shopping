@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "SKCS Online Shopping | Global Shopping & Booking Centre",
   description:
     "SKCS Online Shopping compares prices from Amazon, Takealot, Evetech, Wootware and other global stores so you can find the best deals in one place.",
+  // Added GridinSoft verification tag here:
+  other: {
+    "gridinsoft-key": "qsnmquihxbg25xauq0gk9zzu94fb5gsc449b9rjn8iq0bokoz4rcttu97q12f3vr",
+  },
 };
 
 export default function RootLayout({
