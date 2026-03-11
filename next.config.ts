@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    qualities: [75, 82, 90, 100], // <-- This fixes the "quality 82" error
     remotePatterns: [
       {
         protocol: 'https',
@@ -14,10 +15,16 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-      // Added Amazon images!
       {
         protocol: 'https',
         hostname: '*.media-amazon.com',
+        port: '',
+        pathname: '/**',
+      },
+      // Added the missing Amazon image server!
+      {
+        protocol: 'https',
+        hostname: 'images-na.ssl-images-amazon.com',
         port: '',
         pathname: '/**',
       },

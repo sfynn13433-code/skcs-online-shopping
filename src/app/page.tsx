@@ -202,20 +202,12 @@ export default function Home() {
             Hand‑picked premium offers with your exclusive tracking ID. Click, shop, and save!
           </p>
           
-          {/* Top Deal Buttons */}
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">
-              Top Sellers
-            </a>
-            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">
-              Exclusive Offers
-            </a>
-            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">
-              Tech & Electronics
-            </a>
+            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">Top Sellers</a>
+            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">Exclusive Offers</a>
+            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-transparent">Tech & Electronics</a>
           </div>
 
-          {/* Department Shopping */}
           <div className="mb-10">
             <h3 className="text-2xl font-bold mb-6 text-cyan-400 flex items-center justify-center gap-2">
               <span className="text-3xl">🛒</span> Shop Top Categories
@@ -224,23 +216,151 @@ export default function Home() {
               <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Home & Furniture</a>
               <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Toys & Games</a>
               <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Fashion & Clothing</a>
-              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Sports & Outdoors</a>
-              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Beauty & Grooming</a>
-              <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="bg-neutral-800 hover:bg-cyan-600 border border-cyan-500/30 text-white px-5 py-3 rounded-full text-sm font-medium transition-all">Everyday Essentials</a>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Smart Link Home */}
-          <div className="mt-8">
-            <a href="https://sovrn.co/19jthxc" target="_blank" rel="noopener sponsored" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-full text-sm font-bold uppercase tracking-wider transition-all border border-white/20">
-              <span>🏠</span> Sovrn Home (Smart Links)
-            </a>
+      {/* AMAZON TRENDING FINDS SECTION */}
+      <section className="py-16 bg-neutral-950 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between mb-12">
+            <h2 className="text-3xl font-black tracking-tight uppercase">
+              Amazon <span className="text-orange-400">Trending Finds</span>
+            </h2>
+            <div className="h-[1px] flex-grow bg-white/10 ml-8 hidden md:block"></div>
           </div>
 
-          {/* Tracking ID Footer */}
-          <p className="text-xs text-neutral-600 mt-10">
-            All links use your personal tracking ID: <span className="text-cyan-500 font-mono">SKCS</span>
-          </p>
+          {/* Product Grid - 8 items */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            {/* Product 1: Samsung S26 Ultra */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">📱</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Electronics</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">Samsung Galaxy S26 Ultra, Unlocked Android Smartphone 512GB</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$1,299.99</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=Samsung+Galaxy+S26+Ultra&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+            {/* Product 2: Shark Vacuum */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🧹</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Home Essentials</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">Shark Pet Cordless Vacuum Cleaner with LED Headlights</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$149.00</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=Shark+Pet+Cordless+Vacuum&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+            {/* Product 3: Meta Quest Head Strap */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🥽</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Gaming Accessories</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">Battery Head Strap Compatible with Meta Quest 3S/3/2</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$35.69</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=Battery+Head+Strap+Meta+Quest&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+            {/* Product 4: Workout Set */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🧘‍♀️</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Fashion & Fitness</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">ABOCIW Womens 2 Piece Workout Set Seamless Sports Bra & Leggings</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$40.99</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=ABOCIW+Womens+2+Piece+Workout+Set&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+            {/* Product 5: Ceramic Vases */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🏺</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Home Decor</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">Ceramic Vase Set of 3, Rustic Neutral Farmhouse Decor</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$29.99</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=Ceramic+Vase+Set+of+3&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+            {/* Product 6: LG Monitor */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🖥️</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Electronics</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">LG 32-inch Ultrafine 4K UHD IPS Computer Monitor</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$399.99</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=LG+32-inch+Ultrafine+4K+Monitor&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+            {/* Product 7: DAE Dry Shampoo */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">✨</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Beauty</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">DAE Fairy Duster Dry Shampoo Powder - Natural Ingredients</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$30.00</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=DAE+Fairy+Duster+Dry+Shampoo&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+            {/* Product 8: Boxwood Bunny */}
+            <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
+              <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🐇</div>
+              <div className="p-6 flex flex-col flex-grow">
+                <span className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">Seasonal Decor</span>
+                <h3 className="text-sm font-bold mb-2 line-clamp-2">Easter Decorations - 3 Ft Boxwood Bunny Topiary</h3>
+                <div className="flex items-baseline gap-2 mb-6 mt-auto">
+                  <span className="text-xl font-black text-white">$66.99</span>
+                </div>
+                <a href="https://www.amazon.com/s?k=Easter+Decorations+Boxwood+Bunny&tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="w-full block text-center bg-white hover:bg-orange-500 hover:text-white text-black text-sm font-bold py-3 rounded-xl transition-all shadow-lg">
+                  Shop on Amazon
+                </a>
+              </div>
+            </div>
+
+          </div>
+          
+          <div className="mt-12 text-center">
+            <a href="https://www.amazon.com/bestsellers?tag=skcsshopping2-20" target="_blank" rel="noopener sponsored" className="inline-block border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest transition-all">
+              Shop All Amazon Deals
+            </a>
+          </div>
         </div>
       </section>
 
