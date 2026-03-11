@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Head from "next/head";               // <-- Added for meta tags
+import Head from "next/head";
 import { supabase } from "../lib/supabase";
 import AIshoppingAssistant from "../components/AIshoppingAssistant";
 import BookingSection from "../components/BookingSection";
@@ -388,6 +388,8 @@ export default function Home() {
               <ul className="space-y-4 text-sm text-neutral-500">
                 <li><Link href="/about" className="hover:text-cyan-500 transition">About Us</Link></li>
                 <li><Link href="/privacy" className="hover:text-cyan-500 transition">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-cyan-500 transition">Terms of Service</Link></li>
+                <li><Link href="/disclosure" className="hover:text-cyan-500 transition">Transparency & Disclosure</Link></li>
               </ul>
             </div>
             <div>
@@ -400,6 +402,7 @@ export default function Home() {
           </div>
           <div className="max-w-7xl mx-auto px-6 border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] text-neutral-600 font-bold uppercase tracking-[0.2em]">
             <p>© 2026 SKCS Online Shopping. All Rights Reserved.</p>
+            <p>Registration number 2025 / 918368 / 07</p>
           </div>
         </footer>
       </main>

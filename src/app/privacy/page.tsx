@@ -1,53 +1,90 @@
-import Link from 'next/link';
+import React from 'react';
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicy(): React.JSX.Element {
   return (
-    <main className="bg-black min-h-screen text-white py-20 px-6">
-      <div className="max-w-4xl mx-auto border border-white/10 bg-neutral-900/30 p-8 md:p-12 rounded-3xl shadow-2xl">
-        <h1 className="text-4xl font-black mb-8 uppercase tracking-tighter italic">
-          Privacy <span className="text-cyan-500">Policy</span>
-        </h1>
-        
-        <p className="text-neutral-400 mb-8 leading-relaxed">
-          Last Updated: March 11, 2026. Your privacy is a priority at SKCS Online Shopping. This policy outlines how we handle data to provide you with a premium marketplace experience.
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* --- PAGE CONTENT --- */}
+      <h1 className="text-3xl font-bold mb-6">Global Privacy Policy</h1>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Modular Privacy Framework (2026 Edition)</h2>
+
+      <section className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">1. Our Core Commitment</h3>
+        <p className="text-gray-700">
+          Headquartered in Pietermaritzburg, South Africa, SKCS Online Shopping is built on respect for user privacy. Our modular policy dynamically aligns with your location and the strongest applicable law—including POPIA (South Africa), GDPR (EU/EEA), and CCPA/CPRA (USA)—while practicing strict data minimization across all regions.
         </p>
+      </section>
 
-        <div className="space-y-10">
-          <section>
-            <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest">1. Information We Collect</h2>
-            <p className="text-neutral-400 leading-relaxed">
-              We collect anonymous analytics, including page views and search queries, to optimize our platform. If you use our <strong>AI Shopping Assistant</strong>, the text of your queries is processed to provide product recommendations but is not linked to your personal identity unless you are signed into a registered account.
-            </p>
-          </section>
+      <section className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">2. Data Collection & Purposeful Use</h3>
+        <ul className="list-disc pl-6 text-gray-700 space-y-2">
+          <li><strong>Identification:</strong> Email addresses are collected exclusively for our curated 2026 Trend Reports (opt-in only).</li>
+          <li><strong>Technical Data:</strong> IP addresses and device info are used solely to determine your region and apply the correct privacy module.</li>
+          <li><strong>Usage Insights:</strong> Anonymized, aggregated interaction data is used to refine our AI-driven rankings and directory relevance.</li>
+        </ul>
+      </section>
 
-          <section>
-            <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest">2. Affiliate Disclosure & Links</h2>
-            <p className="text-neutral-400 leading-relaxed">
-              SKCS Online Shopping is a participant in various affiliate programs, including <strong>Amazon Associates, AliExpress Portals, and Sovrn</strong>. We may earn a commission when you click on links and make a purchase. This comes at no extra cost to you. Once you leave our site, the privacy policy of the respective retailer (e.g., Amazon, Walmart, Takealot) applies.
-            </p>
-          </section>
+      <section className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">3. Privacy-Forward Tracking</h3>
+        <p className="text-gray-700">
+          In the post-cookie era, we exclusively use first-party identifiers and server-side (S2S) attribution. This technology ensures your clicks are accurately attributed to our partners while rigorously protecting your personal privacy.
+        </p>
+      </section>
 
-          <section>
-            <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest">3. Cookies & Tracking</h2>
-            <p className="text-neutral-400 leading-relaxed">
-              Our affiliate partners use <strong>cookies</strong> to track clicks for commission purposes. These cookies stay on your device for a set period (usually 24 hours to 30 days) to ensure we are credited for the referral. You can disable cookies in your browser settings at any time.
-            </p>
-          </section>
+      <section className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">4. Regional Addenda & Your Rights</h3>
+        <ul className="list-disc pl-6 text-gray-700 space-y-4">
+          <li>
+            <strong>South Africa (POPIA):</strong> We are fully compliant with the Protection of Personal Information Act. Our designated Information Officer is Stephen Fynn.
+          </li>
+          <li>
+            <strong>European Union (GDPR + AI Act):</strong> We honor your "Right to be Forgotten." In compliance with Article 50 of the EU AI Act, we explicitly label all content and rankings that are AI-assisted.
+          </li>
+          <li>
+            <strong>United States (CCPA/CPRA):</strong> We honor Global Privacy Control (GPC) signals automatically. You may opt out of data "sharing" for attribution at any time via our Privacy Dashboard.
+          </li>
+        </ul>
+      </section>
 
-          <section>
-            <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-widest">4. Your Data Rights (POPIA/GDPR)</h2>
-            <p className="text-neutral-400 leading-relaxed">
-              In accordance with South African <strong>POPIA</strong> regulations, you have the right to request the deletion, correction, or update of any personal data we may hold. For inquiries, please contact us at <span className="text-cyan-500">stephenfynn@skcs.co.za</span>.
-            </p>
-          </section>
+      <section className="mb-12">
+        <h3 className="text-xl font-semibold mb-2">5. Privacy Inquiries</h3>
+        <p className="mb-2 text-gray-700">To exercise your data rights or for privacy-related concerns, please contact:</p>
+        <ul className="text-gray-700 space-y-1">
+          <li><strong>Data Protection & Compliance:</strong> <a href="mailto:compliance@skcs.co.za" className="text-blue-600 hover:underline">compliance@skcs.co.za</a></li>
+          <li><strong>Technical Privacy Support:</strong> <a href="mailto:help@skcs.co.za" className="text-blue-600 hover:underline">help@skcs.co.za</a></li>
+        </ul>
+      </section>
+
+      {/* --- BOTTOM SECTION --- */}
+      <div className="mt-16 pt-12 border-t border-gray-300">
+        <h2 className="text-2xl font-bold text-gray-900">SKCS</h2>
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">Online Shopping & Booking Centre</h3>
+        <p className="text-gray-700 mb-8 max-w-2xl">
+          The premium global destination for online shopping, booking services, and marketplace deals.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Resources</h3>
+            <ul className="space-y-2 text-gray-700">
+              <li><a href="/about" className="hover:text-blue-600 transition-colors">About Us</a></li>
+              <li><a href="/privacy" className="hover:text-blue-600 transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="hover:text-blue-600 transition-colors">Terms of Service</a></li>
+              <li><a href="/disclosure" className="hover:text-blue-600 transition-colors">Transparency & Disclosure</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Stay Updated</h3>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2.5 rounded-md font-medium transition-colors">
+              Join
+            </button>
+          </div>
         </div>
-
-        <div className="mt-12 pt-8 border-t border-white/10">
-          <Link href="/" className="text-cyan-500 font-bold uppercase tracking-widest hover:text-white transition">
-            ← Back to Marketplace
-          </Link>
-        </div>
+        
+        <p className="text-sm text-gray-500 pt-6 border-t border-gray-100">
+          © 2026 SKCS Online Shopping. All Rights Reserved.
+        </p>
       </div>
-    </main>
+    </div>
   );
 }
