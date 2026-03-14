@@ -1,175 +1,135 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
+    // 1. INITIALIZE SUPABASE WITH ADMIN KEY (To bypass RLS)
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+      process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+    );
+
     const { message } = await req.json();
-    const systemPrompt = `You are the SKCS AI Shopping Assistant. Always recommend 3 options based on price, value, and quality.`;
+    if (!message) return NextResponse.json({ reply: "How can I help you today?" });
 
-    // 1. The Multi-Platform AI Waterfall
-    const providers = [
-      {
-        name: "Groq",
-        url: "https://api.groq.com/openai/v1/chat/completions",
-        key: process.env.GROQ_KEY || process.env.GROQ_API_KEY,
-        model: "llama-3.1-8b-instant",
-        format: "openai"
-      },
-      {
-        name: "Gemini",
-        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        key: process.env.GEMINI_API_KEY,
-        model: "gemini-1.5-flash",
-        format: "gemini"
-      },
-      {
-        name: "DeepSeek",
-        url: "https://api.deepseek.com/chat/completions",
-        key: process.env.DEPPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY,
-        model: "deepseek-chat",
-        format: "openai"
-      },
-      {
-        name: "OpenRouter",
-        url: "https://openrouter.ai/api/v1/chat/completions",
-        key: process.env.OPENROUTER_KEY || process.env.OPENROUTER_API_KEY,
-        model: "meta-llama/llama-3-8b-instruct:free",
-        format: "openai"
-      },
-      {
-        name: "Cohere",
-        url: "https://api.cohere.ai/v1/chat",
-        key: process.env.COHERE_API_KEY,
-        model: "command-r",
-        format: "cohere"
-      },
-      {
-        name: "HuggingFace",
-        url: "https://router.huggingface.co/hf-inference/models/mistralai/Mistral-7B-Instruct-v0.2",
-        key: process.env.HUGGINGFACE_API_KEY || process.env.HUGGINGFACE_KEY,
-        model: "hf",
-        format: "huggingface"
-      }
-      // Comment out OpenAI for now
-      // {
-      //   name: "OpenAI",
-      //   url: "https://api.openai.com/v1/chat/completions",
-      //   key: process.env.OPENAI_KEY || process.env.OPENAI_APP_KEY,
-      //   model: "gpt-4o-mini",
-      //   format: "openai"
-      // },
-    ];
+    // 2. BROAD DATABASE SEARCH
+    const cleanQuery = message.toLowerCase().replace(/[^\w\s]/g, "").trim();
+    const keywords = cleanQuery.split(" ").filter((word: string) => word.length > 2);
 
-    let finalReply = "";
-    let isSuccess = false;
+    let rawProducts: any[] = [];
 
-    // 2. Loop through providers
-    for (const provider of providers) {
-      if (!provider.key) {
-        console.log(`⏩ Skipping ${provider.name} - No API key found`);
-        continue;
-      }
+    if (keywords.length > 0) {
+      // Searching across title, brand, and category
+      const orConditions = keywords
+        .map((w: string) => `title.ilike.%${w}%,brand.ilike.%${w}%,category.ilike.%${w}%`)
+        .join(",");
 
-      console.log(`🔄 Attempting to fetch from ${provider.name}...`);
+      const { data, error } = await supabaseAdmin
+        .from("products")
+        .select("*")
+        .or(orConditions)
+        .limit(15);
 
-      try {
-        let requestBody;
-        let requestHeaders: Record<string, string> = {
-          "Content-Type": "application/json",
-        };
-
-        // 3. The Universal Translator: Format request based on AI type
-        if (provider.format === "openai") {
-          requestHeaders["Authorization"] = `Bearer ${provider.key}`;
-          requestBody = JSON.stringify({
-            model: provider.model,
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: message }
-            ]
-          });
-        } 
-        else if (provider.format === "gemini") {
-          // Gemini does not use Bearer tokens in headers, key is in URL
-          requestBody = JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  { text: `${systemPrompt}\n\nUser Question: ${message}` }
-                ]
-              }
-            ]
-          });
-        }
-        else if (provider.format === "cohere") {
-          requestHeaders["Authorization"] = `Bearer ${provider.key}`;
-          requestHeaders["Accept"] = "application/json";
-          requestBody = JSON.stringify({
-            model: provider.model,
-            message: `${systemPrompt}\n\nUser Question: ${message}`
-          });
-        }
-        else if (provider.format === "huggingface") {
-          requestHeaders["Authorization"] = `Bearer ${provider.key}`;
-          // HuggingFace standard inference format
-          requestBody = JSON.stringify({
-            inputs: `[INST] ${systemPrompt}\n\n${message} [/INST]`,
-            parameters: { max_new_tokens: 500 }
-          });
-        }
-
-        const response = await fetch(provider.url, {
-          method: "POST",
-          headers: requestHeaders,
-          body: requestBody,
-        });
-
-        // 🚨 Diagnostic Logging
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`\n🚨 ${provider.name} REJECTED THE REQUEST!`);
-          console.error(`Status Code: ${response.status}`);
-          console.error(`Reason: ${errorText}\n`);
-          continue; // Move to the next backup
-        }
-
-        const data = await response.json();
-
-        // 4. Extract the text based on the provider's specific response format
-        if (provider.format === "openai") {
-          finalReply = data.choices[0].message.content;
-        } 
-        else if (provider.format === "gemini") {
-          finalReply = data.candidates[0].content.parts[0].text;
-        }
-        else if (provider.format === "cohere") {
-          finalReply = data.text;
-        }
-        else if (provider.format === "huggingface") {
-          // HuggingFace usually returns an array with the generated text
-          finalReply = Array.isArray(data) ? data[0].generated_text : data.generated_text;
-          // Strip out the prompt text if HF repeats it
-          finalReply = finalReply.split("[/INST]").pop()?.trim() || finalReply;
-        }
-
-        isSuccess = true;
-        console.log(`✅ Success! Response generated by ${provider.name}`);
-        break; // Stop the loop, we got our answer!
-
-      } catch (error) {
-        console.error(`❌ ${provider.name} completely crashed:`, error);
-      }
+      if (error) console.error("Supabase error:", error);
+      rawProducts = data || [];
     }
 
-    if (!isSuccess) {
-      return NextResponse.json({ 
-        reply: "System Notice: Our AI shopping servers are experiencing exceptionally high traffic. Please try again in a few moments." 
+    // Hard check: If no data, stop here
+    if (rawProducts.length === 0) {
+      return NextResponse.json({
+        reply: "I couldn't find any items in our verified inventory matching those keywords.",
+        products: [],
+        modelUsed: "Core Intelligence"
       });
     }
 
-    return NextResponse.json({ reply: finalReply });
+    // 3. PREPARE WATERFALL PROVIDERS (6-Layer Logic)
+    const productList = rawProducts
+      .map((p) => `[ID: ${p.id}] ${p.brand} - ${p.title} ($${p.price})`)
+      .join("\n");
+
+    const systemPrompt = `User wants: "${message}". 
+TASK: You are the SKCS Assistant. Select only the most relevant product IDs from the list. 
+Respond ONLY in JSON format: { "decision": "Professional 1-sentence summary", "approved_ids": ["uuid"] }
+Inventory:
+${productList}`;
+
+    const providers = [
+      { name: "Groq", url: "https://api.groq.com/openai/v1/chat/completions", key: process.env.GROQ_API_KEY, model: "llama-3.3-70b-versatile" },
+      { name: "DeepSeek", url: "https://api.deepseek.com/chat/completions", key: process.env.DEEPSEEK_API_KEY, model: "deepseek-chat" },
+      { name: "Gemini", url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, key: process.env.GEMINI_API_KEY, model: "gemini-1.5-flash" },
+      { name: "OpenRouter", url: "https://openrouter.ai/api/v1/chat/completions", key: process.env.OPENROUTER_API_KEY, model: "meta-llama/llama-3-8b-instruct" },
+      { name: "Cohere", url: "https://api.cohere.ai/v1/chat", key: process.env.COHERE_API_KEY, model: "command-r-plus" },
+      { name: "HuggingFace", url: "https://api-inference.huggingface.co/v1/chat/completions", key: process.env.HUGGINGFACE_API_KEY, model: "meta-llama/Meta-Llama-3-8B-Instruct" }
+    ];
+
+    let aiDecision = null;
+    let modelUsed = "Core Intelligence";
+
+    // 4. EXECUTE WATERFALL
+    for (const p of providers) {
+      if (!p.key) continue;
+
+      try {
+        const isGemini = p.name === "Gemini";
+        const res = await fetch(p.url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(isGemini ? {} : { Authorization: `Bearer ${p.key}` })
+          },
+          body: JSON.stringify(
+            isGemini
+              ? {
+                  contents: [{ parts: [{ text: systemPrompt }] }],
+                  generationConfig: { response_mime_type: "application/json", temperature: 0.1 }
+                }
+              : {
+                  model: p.model,
+                  messages: [{ role: "user", content: systemPrompt }],
+                  response_format: { type: "json_object" },
+                  temperature: 0.1
+                }
+          ),
+          signal: AbortSignal.timeout(6000)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const text = isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content;
+          aiDecision = JSON.parse(text.replace(/```json|```/g, "").trim());
+          modelUsed = p.name;
+          break; // Stop waterfall on success
+        }
+      } catch (e) {
+        console.error(`${p.name} layer failed, moving to next...`);
+      }
+    }
+
+    // 5. MAP DATA TO FRONTEND KEYS
+    // We map 'image_url' to 'image' and 'affiliate_url' to 'product_url'
+    const finalProducts = rawProducts
+      .filter((p) => !aiDecision || aiDecision.approved_ids.includes(p.id))
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        brand: p.brand,
+        price: p.price,
+        image: p.image_url, 
+        description: p.product_group || p.category,
+        product_url: p.affiliate_url 
+      }));
+
+    return NextResponse.json({
+      reply: aiDecision?.decision || "I've curated the best matches from our inventory for you.",
+      products: finalProducts,
+      modelUsed
+    });
 
   } catch (error) {
-    console.error("Critical API Route Crash:", error);
-    return NextResponse.json({ reply: "The AI engine is temporarily offline." });
+    console.error("API error:", error);
+    return NextResponse.json({ reply: "Sync error. Please try again.", products: [] }, { status: 500 });
   }
 }

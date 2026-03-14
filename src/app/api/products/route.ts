@@ -22,11 +22,22 @@ export async function GET() {
       );
     }
 
-    console.log("Fetching products from Supabase...");
+    console.log("Fetching products with offers...");
 
     const { data, error } = await supabase
       .from("products")
-      .select("id, title, price, discount_price, category, image, affiliate_url, store, created_at")
+      .select(`
+        id,
+        title,
+        category,
+        image,
+        created_at,
+        product_offers (
+          price,
+          affiliate_url,
+          store
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -43,15 +54,19 @@ export async function GET() {
     };
 
     const products =
-      data?.map((product) => ({
-        id: product.id ?? `fallback-${Math.random()}`,
-        title: product.title ?? "Unknown Product",
-        price: formatPrice(product.discount_price ?? product.price),
-        store: product.store ?? "Marketplace",
-        image: product.image ?? "/placeholder-product.png",
-        affiliate_url: product.affiliate_url ?? "#",
-        category: product.category ?? "Other",
-      })) || [];
+      data?.map((product) => {
+        const offer = product.product_offers?.[0];
+
+        return {
+          id: product.id ?? `fallback-${Math.random()}`,
+          title: product.title ?? "Unknown Product",
+          price: formatPrice(offer?.price ?? null),
+          store: offer?.store ?? "Marketplace",
+          image: product.image ?? "/placeholder-product.png",
+          affiliate_url: offer?.affiliate_url ?? "#",
+          category: product.category ?? "Other",
+        };
+      }) || [];
 
     console.log(`Returned ${products.length} products`);
 

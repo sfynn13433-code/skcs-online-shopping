@@ -42,3 +42,21 @@
 a {
   @apply text-blue-600 hover:text-blue-800 transition-colors;
 }
+
+/* ============================= */
+/* STORE CAROUSEL ANIMATION */
+/* ============================= */
+
+@keyframes stores-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-stores-scroll {
+  animation: stores-scroll 45s linear infinite;
+}

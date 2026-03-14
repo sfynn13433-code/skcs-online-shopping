@@ -1,49 +1,93 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "../components/Navbar";
 import "./globals.css";
+import Navbar from "../components/Navbar";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+export const metadata = {
+  metadataBase: new URL("https://www.skcs.co.za"),
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
   title: "SKCS Online Shopping | Global Shopping & Booking Centre",
+
   description:
-    "SKCS Online Shopping compares prices from Amazon, Takealot, Evetech, Wootware and other global stores so you can find the best deals in one place.",
-  // Added GridinSoft verification tag here:
-  other: {
-    "gridinsoft-key": "qsnmquihxbg25xauq0gk9zzu94fb5gsc449b9rjn8iq0bokoz4rcttu97q12f3vr",
+    "SKCS Online Shopping compares prices from Amazon, Takealot, Evetech, Wootware and global marketplaces so you can find the best deals in one place.",
+
+  keywords: [
+    "online shopping",
+    "price comparison",
+    "AI shopping assistant",
+    "Amazon deals",
+    "Takealot deals",
+    "global shopping",
+  ],
+
+  alternates: {
+    canonical: "/",
+  },
+
+  openGraph: {
+    title: "SKCS Online Shopping",
+    description:
+      "Compare prices across global marketplaces and discover the best deals using AI.",
+    url: "https://www.skcs.co.za",
+    siteName: "SKCS Online Shopping",
+    images: [
+      {
+        url: "/hero.jpg",
+        width: 1200,
+        height: 630,
+        alt: "SKCS Online Shopping Marketplace",
+      },
+    ],
+    locale: "en_ZA",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "SKCS Online Shopping",
+    description:
+      "AI-powered product comparison across global marketplaces.",
+    images: ["/hero.jpg"],
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`
-          ${geistSans.variable} ${geistMono.variable} antialiased
-          min-h-screen flex flex-col
-        `}
-      >
+      <body>
         <Navbar />
-        <main className="pt-20">{children}</main> {/* pt-20 matches navbar height */}
-        {/* Optional footer – uncomment when ready */}
-        {/* <footer className="bg-gray-800 text-white py-6 mt-auto">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            © {new Date().getFullYear()} SKCS Online Shopping
-          </div>
-        </footer> */}
+
+        <main className="pt-20">
+          {children}
+        </main>
+
+        {/* Organization Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "SKCS Online Shopping",
+              url: "https://www.skcs.co.za",
+              logo: "https://www.skcs.co.za/hero.jpg",
+              sameAs: [
+                "https://facebook.com/",
+                "https://instagram.com/",
+                "https://linkedin.com/",
+                "https://youtube.com/"
+              ],
+              description:
+                "Global online shopping and booking platform that compares prices across multiple marketplaces using AI.",
+            }),
+          }}
+        />
+
+        {/* Google Analytics */}
+        <GoogleAnalytics gaId="G-8WBTGD8X2G" />
       </body>
     </html>
   );

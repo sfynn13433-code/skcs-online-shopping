@@ -6,7 +6,11 @@ import Link from "next/link";
 import Head from "next/head";
 import { supabase } from "../lib/supabase";
 import AIshoppingAssistant from "../components/AIshoppingAssistant";
+import AIQuickSearch from "../components/AIQuickSearch"; // <-- added import
 import BookingSection from "../components/BookingSection";
+import Footer from "../components/Footer";
+import FeaturedStores from "../components/FeaturedStores";
+import ProductGrid from "../components/ProductGrid"; // <-- NEW IMPORT
 
 interface UserProfile {
   id: string;
@@ -15,8 +19,6 @@ interface UserProfile {
 }
 
 export default function Home() {
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
@@ -46,26 +48,14 @@ export default function Home() {
     getProfile();
   }, []);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setProfile(null);
-    window.location.reload();
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedQuery(query), 300);
-    return () => clearTimeout(timer);
-  }, [query]);
-
   return (
     <>
-      {/* GridinSoft verification meta tag */}
       <Head>
         <meta name="gridinsoft-key" content="qsnmquihxbg25xauq0gk9zzu94fb5gsc449b9rjn8iq0bokoz4rcttu97q12f3vr" />
       </Head>
 
       <main className="bg-black min-h-screen text-white">
-        {/* HERO - full screen with full image visible */}
+        {/* HERO - without search bar */}
         <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-black">
           <div className="absolute inset-0 z-0">
             <Image
@@ -77,6 +67,7 @@ export default function Home() {
             />
             <div className="absolute inset-0 bg-black/10 z-10" />
           </div>
+          
           <div className="relative z-20 text-center px-6 max-w-5xl">
             <h1 className="text-6xl md:text-9xl font-black mb-4 tracking-tighter leading-[0.85] drop-shadow-2xl">
               SKCS <span className="text-cyan-500">ONLINE</span>
@@ -84,20 +75,37 @@ export default function Home() {
             <p className="text-xl md:text-3xl text-white/90 mb-10 max-w-2xl mx-auto font-light tracking-tight italic drop-shadow-md">
               Premium Global Marketplace
             </p>
-            <div className="max-w-2xl mx-auto">
-              <input
-                type="text"
-                placeholder="What are you looking for?"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="w-full bg-black/40 backdrop-blur-md border border-white/20 rounded-2xl px-8 py-5 text-xl text-white outline-none transition-all shadow-2xl"
-              />
-            </div>
           </div>
         </section>
 
-        {/* AI SHOPPING ASSISTANT */}
-        <section className="max-w-7xl mx-auto px-6 pt-20 pb-10">
+        {/* FEATURED STORES SECTION - new */}
+        <FeaturedStores />
+
+        {/* AI SHOPPING ASSISTANT (scroll target from navbar) */}
+        <section
+          id="ai-assistant-section"
+          className="max-w-7xl mx-auto px-6 pt-20 pb-10 scroll-mt-24"
+        >
+          {/* AI Intelligence Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight uppercase mb-4">
+              AI <span className="text-cyan-500">Shopping Assistant</span>
+            </h2>
+            <p className="text-neutral-400 max-w-2xl mx-auto mb-4">
+              Powered by advanced AI models including <span className="text-white">Groq</span>,
+              <span className="text-white"> Gemini</span> and <span className="text-white">DeepSeek</span>.
+              Compare products across global marketplaces instantly and discover the best deals.
+            </p>
+            <p className="text-neutral-500 text-sm max-w-xl mx-auto">
+              Ask the assistant to compare prices, analyse value, or find the best
+              products from Amazon, AliExpress, Takealot and other international stores.
+            </p>
+          </div>
+
+          {/* AI Quick Search Component */}
+          <AIQuickSearch />
+
+          {/* AI Assistant Component */}
           <AIshoppingAssistant />
         </section>
 
@@ -131,6 +139,17 @@ export default function Home() {
           </div>
         </section>
 
+        {/* PRODUCT GRID SECTION - NEW */}
+        <section className="max-w-7xl mx-auto px-6 py-10">
+          <div className="flex items-center justify-between mb-12">
+            <h2 className="text-3xl font-black tracking-tight uppercase">
+              Popular <span className="text-cyan-500">Products</span>
+            </h2>
+            <div className="h-[1px] flex-grow bg-white/10 ml-8 hidden md:block"></div>
+          </div>
+          <ProductGrid />
+        </section>
+
         {/* FEATURED CATEGORY BANNER */}
         <section className="max-w-7xl mx-auto px-6 py-10">
           <div className="relative w-full rounded-[2rem] overflow-hidden bg-gradient-to-r from-cyan-900 to-black border border-white/10 p-10 md:p-16 flex flex-col md:flex-row items-center justify-between shadow-2xl">
@@ -151,17 +170,14 @@ export default function Home() {
                 Shop Gaming
               </Link>
             </div>
-            
             <div className="relative z-10 text-9xl drop-shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500">
               🎮
             </div>
-            
-            {/* Abstract background glow */}
             <div className="absolute right-0 bottom-0 w-96 h-96 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none"></div>
           </div>
         </section>
 
-        {/* ALIEXPRESS DEALS SECTION */}
+        {/* ALIEXPRESS DEALS SECTION (expanded) */}
         <section className="py-16 bg-black border-t border-white/10">
           <div className="max-w-7xl mx-auto px-6 text-center">
             <h2 className="text-3xl font-black tracking-tight uppercase mb-4">
@@ -228,7 +244,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* AMAZON TRENDING FINDS SECTION */}
+        {/* AMAZON TRENDING FINDS SECTION (expanded) */}
         <section className="py-16 bg-neutral-950 border-t border-white/10">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex items-center justify-between mb-12">
@@ -240,8 +256,7 @@ export default function Home() {
 
             {/* Product Grid - 8 items */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              
-              {/* Product 1: Samsung S26 Ultra */}
+              {/* Product 1 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">📱</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -256,7 +271,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Product 2: Shark Vacuum */}
+              {/* Product 2 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🧹</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -271,7 +286,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Product 3: Meta Quest Head Strap */}
+              {/* Product 3 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🥽</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -286,7 +301,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Product 4: Workout Set */}
+              {/* Product 4 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🧘‍♀️</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -301,7 +316,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Product 5: Ceramic Vases */}
+              {/* Product 5 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🏺</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -316,7 +331,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Product 6: LG Monitor */}
+              {/* Product 6 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🖥️</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -331,7 +346,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Product 7: DAE Dry Shampoo */}
+              {/* Product 7 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">✨</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -346,7 +361,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Product 8: Boxwood Bunny */}
+              {/* Product 8 */}
               <div className="bg-black border border-white/10 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all group flex flex-col">
                 <div className="h-40 bg-neutral-900 flex items-center justify-center text-5xl group-hover:scale-110 transition-transform duration-500">🐇</div>
                 <div className="p-6 flex flex-col flex-grow">
@@ -360,7 +375,6 @@ export default function Home() {
                   </a>
                 </div>
               </div>
-
             </div>
             
             <div className="mt-12 text-center">
@@ -371,40 +385,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FOOTER */}
-        <footer className="bg-neutral-950 border-t border-white/10 pt-20 pb-10">
-          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 rounded bg-cyan-500 flex items-center justify-center font-black text-[10px]">SKCS</div>
-                <span className="font-black text-xl italic uppercase">Online Shopping & Booking Centre</span>
-              </div>
-              <p className="text-neutral-500 max-w-sm text-sm leading-relaxed">
-                The premium global destination for online shopping, booking services, and marketplace deals.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-6 uppercase tracking-widest text-xs">Resources</h4>
-              <ul className="space-y-4 text-sm text-neutral-500">
-                <li><Link href="/about" className="hover:text-cyan-500 transition">About Us</Link></li>
-                <li><Link href="/privacy" className="hover:text-cyan-500 transition">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-cyan-500 transition">Terms of Service</Link></li>
-                <li><Link href="/disclosure" className="hover:text-cyan-500 transition">Transparency & Disclosure</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-6 uppercase tracking-widest text-xs">Stay Updated</h4>
-              <div className="flex gap-2">
-                <input type="email" placeholder="Email" className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm outline-none focus:border-cyan-500 flex-grow" />
-                <button className="bg-white text-black px-4 py-2 rounded-lg text-xs font-bold hover:bg-cyan-500 transition">Join</button>
-              </div>
-            </div>
-          </div>
-          <div className="max-w-7xl mx-auto px-6 border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] text-neutral-600 font-bold uppercase tracking-[0.2em]">
-            <p>© 2026 SKCS Online Shopping. All Rights Reserved.</p>
-            <p>Registration number 2025 / 918368 / 07</p>
-          </div>
-        </footer>
+        {/* FOOTER - replaced with imported component */}
+        <Footer />
       </main>
     </>
   );

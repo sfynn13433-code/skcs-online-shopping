@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    qualities: [75, 82, 90, 100], // <-- This fixes the "quality 82" error
+    qualities: [75, 82, 90, 100], // fixes the "quality 82" warning
+
     remotePatterns: [
       {
         protocol: 'https',
@@ -9,27 +10,40 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+
       {
         protocol: 'https',
         hostname: '*.aliexpress-media.com',
         port: '',
         pathname: '/**',
       },
+
+      // Amazon main CDN
       {
         protocol: 'https',
-        hostname: '*.media-amazon.com',
+        hostname: 'm.media-amazon.com',
         port: '',
         pathname: '/**',
       },
-      // Added the missing Amazon image server!
+
+      // Amazon alternate CDN
       {
         protocol: 'https',
         hostname: 'images-na.ssl-images-amazon.com',
         port: '',
         pathname: '/**',
       },
+
+      // Some Amazon images also load from this CDN
+      {
+        protocol: 'https',
+        hostname: 'images.amazon.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
+
   turbopack: {
     resolveAlias: {
       '@': './src',

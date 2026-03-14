@@ -1,0 +1,30 @@
+# SKCS Online Shopping
+
+SKCS Online Shopping is a global AI-powered shopping and booking platform.
+
+The platform helps users compare prices across multiple marketplaces,
+including Amazon, AliExpress, eBay, and regional retailers.
+
+## Core Features
+
+- AI Shopping Assistant
+- Global Product Price Comparison
+- Travel & Booking Integration
+- Marketplace Deal Discovery
+
+## Website
+
+https://www.skcs.co.za
+
+## Pages
+
+/  
+/deals  
+/category  
+/assistant  
+/bookings
+
+## Description
+
+SKCS uses artificial intelligence to help users find the best deals
+from global marketplaces quickly and efficiently.

@@ -1,229 +1,159 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2, ShoppingCart, Cpu, HardDrive, Battery, Monitor, Weight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Loader2, ShoppingCart, CheckCircle, Info, Cpu, Package } from "lucide-react";
 
-interface LaptopOption {
-  name: string;
-  priceRange: string;
-  processor: string;
-  graphics: string;
-  ram: string;
-  display: string;
-  storage: string;
-  battery: string;
-  weight: string;
-  description: string;
-  affiliateLink: string;
-  image: string;
+interface Product {
+  id: string;
+  title: string;
+  brand: string;
+  price: number;
+  image?: string;
+  description?: string;
+  product_url?: string;
 }
 
-const laptopOptions: LaptopOption[] = [
-  {
-    name: "Acer Predator Helios 300",
-    priceRange: "$4,500 - $4,800",
-    processor: "Intel Core i5-11300H",
-    graphics: "NVIDIA GeForce RTX 3050",
-    ram: "16GB DDR4",
-    display: "15.6-inch Full HD IPS",
-    storage: "512GB NVMe SSD",
-    battery: "Up to 5 hours",
-    weight: "5.07 lbs",
-    description:
-      "A powerful gaming laptop with RTX graphics and fast NVMe storage. Great balance between price and performance.",
-    affiliateLink:
-      "https://www.amazon.com/s?k=Acer+Predator+Helios+300&tag=skcsshopping2-20",
-    image:
-      "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "Lenovo Legion 5 Pro",
-    priceRange: "$4,500 - $4,800",
-    processor: "AMD Ryzen 7 6800H",
-    graphics: "NVIDIA GeForce RTX 3050",
-    ram: "16GB DDR5",
-    display: "16-inch QHD (2560x1600)",
-    storage: "512GB NVMe SSD",
-    battery: "Up to 6 hours",
-    weight: "4.65 lbs",
-    description:
-      "A strong Ryzen gaming machine with high-resolution display and excellent cooling performance.",
-    affiliateLink:
-      "https://www.amazon.com/s?k=Lenovo+Legion+5+Pro&tag=skcsshopping2-20",
-    image:
-      "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    name: "MSI GF63",
-    priceRange: "$3,700 - $4,000",
-    processor: "Intel Core i5-11350H",
-    graphics: "NVIDIA GeForce GTX 1660 Ti",
-    ram: "16GB DDR4",
-    display: "15.6-inch Full HD",
-    storage: "256GB NVMe SSD + 1TB HDD",
-    battery: "Up to 6 hours",
-    weight: "5.07 lbs",
-    description:
-      "A budget-friendly gaming laptop offering strong GPU performance and large storage capacity.",
-    affiliateLink:
-      "https://www.amazon.com/s?k=MSI+GF63&tag=skcsshopping2-20",
-    image:
-      "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=800&q=80",
-  },
-];
-
-export default function AIshoppingAssistant() {
+export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuery?: string }) {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showResults, setShowResults] = useState(false);
+  const [reply, setReply] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [model, setModel] = useState("");
 
-  const searchAI = async () => {
-    if (!query.trim()) return;
+  const searchAI = async (override?: string) => {
+    const target = override || query;
+    if (!target.trim()) return;
 
     setLoading(true);
-    setShowResults(false);
+    setReply("");
+    setProducts([]);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/ai-shopping", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: target }),
+      });
+
+      const data = await res.json();
+      setReply(data.reply);
+      setProducts(data.products || []);
+      setModel(data.modelUsed || "Core Intelligence");
+    } catch (e) {
+      setReply("Connection failed. Please check your network.");
+    } finally {
       setLoading(false);
-      setShowResults(true);
-    }, 1500);
+    }
   };
 
+  useEffect(() => {
+    if (initialQuery.length > 2) {
+      setQuery(initialQuery);
+      searchAI(initialQuery);
+    }
+  }, [initialQuery]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 p-6 md:p-10">
+    <div className="w-full bg-neutral-900/40 border border-white/10 rounded-[3rem] p-6 md:p-12 backdrop-blur-xl shadow-2xl">
       <div className="max-w-7xl mx-auto">
-
+        
         {/* HEADER */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-black mb-4 text-white">
-            SKCS AI <span className="text-cyan-500">Shopping Assistant</span>
-          </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Get personalized product recommendations powered by AI.
-          </p>
-        </div>
-
-        {/* SEARCH */}
-        <div className="max-w-3xl mx-auto mb-12">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <input
-              className="flex-1 p-4 rounded-2xl border border-white/20 bg-black/40 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500"
-              placeholder="Ask AI to find products... (example: gaming laptop under $5000)"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && searchAI()}
-            />
-
-            <button
-              onClick={searchAI}
-              disabled={loading}
-              className="bg-cyan-500 hover:bg-cyan-400 disabled:bg-gray-600 text-black font-bold px-8 py-4 rounded-2xl"
-            >
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="animate-spin h-5 w-5" />
-                  Searching...
-                </span>
-              ) : (
-                "Ask AI"
-              )}
-            </button>
+        <div className="flex items-center gap-5 mb-4">
+          <div className="w-14 h-14 bg-cyan-500 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_25px_rgba(6,182,212,0.4)]">🤖</div>
+          <div>
+            <h3 className="text-3xl font-black uppercase tracking-tighter text-white">
+              SKCS <span className="text-cyan-500">AI Assistant</span>
+            </h3>
+            <div className="flex items-center gap-2 text-neutral-500 text-[10px] font-bold uppercase tracking-widest mt-1">
+              <CheckCircle className="w-3 h-3 text-cyan-500" /> Verified Inventory Only
+            </div>
           </div>
         </div>
 
-        {/* RESULTS */}
-        {showResults && (
-          <>
-            <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-6 mb-8">
-              <h2 className="text-xl font-bold text-cyan-400 mb-2">
-                🤖 AI Recommendation
-              </h2>
-              <p className="text-gray-300">
-                Based on current market trends, here are three gaming laptops under $5,000.
-              </p>
+        {/* BRIEF EXPLANATION SECTION */}
+        <div className="mb-10 md:pl-20 border-l-2 border-cyan-500/20 ml-7 md:ml-0 pl-6">
+          <p className="text-neutral-400 text-sm leading-relaxed max-w-2xl font-light italic">
+            Our AI understands your intent to find the perfect match within the <strong>SKCS Verified Inventory</strong>. 
+            It analyzes real-time specs, brands, and availability to ensure every recommendation is accurate and tailored to your specific needs.
+          </p>
+        </div>
+
+        {/* SEARCH INPUT */}
+        <div className="max-w-4xl mb-12 flex flex-col sm:flex-row gap-4">
+          <input 
+            className="flex-1 p-5 rounded-2xl bg-black/60 border border-white/10 text-white outline-none focus:border-cyan-500/50 text-lg transition-all" 
+            placeholder="Search for Samsung, Dell, Apple..." 
+            value={query} 
+            onChange={(e) => setQuery(e.target.value)} 
+            onKeyDown={(e) => e.key === "Enter" && searchAI()} 
+          />
+          <button 
+            onClick={() => searchAI()} 
+            disabled={loading} 
+            className="bg-cyan-500 text-black font-black px-12 py-5 rounded-2xl shadow-xl hover:bg-cyan-400 transition-all flex items-center justify-center min-w-[160px]"
+          >
+            {loading ? <Loader2 className="animate-spin" /> : "ASK AI"}
+          </button>
+        </div>
+
+        {/* AI ANALYSIS REPORT BOX */}
+        {reply && (
+          <div className="bg-neutral-900/90 border border-cyan-500/30 rounded-[2rem] p-8 mb-12 relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="absolute top-0 right-0 bg-cyan-500/10 border-l border-b border-cyan-500/20 px-4 py-2 rounded-bl-2xl flex items-center gap-2">
+              <Cpu className="w-3 h-3 text-cyan-500" />
+              <span className="text-[9px] font-black text-cyan-500 uppercase tracking-tighter">Verified by {model}</span>
             </div>
-
-            {/* PRODUCT GRID */}
-            <div className="grid md:grid-cols-3 gap-6">
-              {laptopOptions.map((laptop, index) => (
-                <div
-                  key={index}
-                  className="bg-neutral-900 border border-white/10 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition"
-                >
-                  {/* IMAGE */}
-                  <div className="relative h-48">
-                    <img
-                      src={laptop.image}
-                      alt={laptop.name}
-                      className="w-full h-full object-cover"
-                    />
-
-                    <div className="absolute top-3 right-3 bg-cyan-500 text-black text-xs font-bold px-3 py-1 rounded">
-                      {laptop.priceRange}
-                    </div>
-                  </div>
-
-                  {/* CONTENT */}
-                  <div className="p-5 space-y-3">
-
-                    <h3 className="text-lg font-bold text-white">
-                      {laptop.name}
-                    </h3>
-
-                    <div className="space-y-1 text-sm text-gray-300">
-
-                      <div className="flex gap-2">
-                        <Cpu className="h-4 w-4 text-cyan-500" />
-                        {laptop.processor}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Monitor className="h-4 w-4 text-cyan-500" />
-                        {laptop.display}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <HardDrive className="h-4 w-4 text-cyan-500" />
-                        {laptop.storage}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Battery className="h-4 w-4 text-cyan-500" />
-                        {laptop.battery}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Weight className="h-4 w-4 text-cyan-500" />
-                        {laptop.weight}
-                      </div>
-
-                    </div>
-
-                    <p className="text-gray-400 text-sm border-t border-white/10 pt-3">
-                      {laptop.description}
-                    </p>
-
-                    <a
-                      href={laptop.affiliateLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <button className="w-full mt-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-black font-bold py-3 rounded-xl flex items-center justify-center gap-2">
-                        <ShoppingCart className="h-4 w-4" />
-                        Buy Now
-                      </button>
-                    </a>
-
-                  </div>
-                </div>
-              ))}
+            <div className="flex items-center gap-2 mb-4">
+              <Info className="w-4 h-4 text-cyan-400" />
+              <h2 className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">AI Concierge Analysis</h2>
             </div>
-
-            <p className="text-center text-gray-500 text-sm mt-6">
-              Prices may vary depending on retailer availability.
-            </p>
-          </>
+            <p className="text-gray-100 text-xl font-medium italic leading-relaxed">"{reply}"</p>
+          </div>
         )}
+
+        {/* PRODUCT GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {products.map((p) => (
+            <div key={p.id} className="group bg-neutral-950/80 border border-white/5 rounded-[2.5rem] p-7 hover:border-cyan-500/40 transition-all flex flex-col shadow-2xl">
+              <div className="relative h-64 bg-neutral-900 rounded-3xl mb-6 overflow-hidden shadow-inner">
+                {p.image ? (
+                   <img 
+                    key={`${p.id}-${p.image}`} // Unique key to force re-render on image update
+                    src={p.image} 
+                    alt={p.title} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                   />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-neutral-800">
+                    <Package className="w-16 h-16" />
+                  </div>
+                )}
+                <div className="absolute top-5 right-5 bg-black/80 px-4 py-2 rounded-xl text-cyan-400 font-black text-base border border-white/10 shadow-2xl">
+                  ${p.price}
+                </div>
+              </div>
+
+              <div className="px-2 flex flex-col flex-1">
+                <span className="text-cyan-500 text-[10px] font-black uppercase tracking-[0.4em] mb-2">{p.brand}</span>
+                <h3 className="text-white font-bold text-2xl mb-4 line-clamp-2 min-h-[4rem] group-hover:text-cyan-400 transition-colors leading-tight">
+                  {p.title}
+                </h3>
+                <p className="text-neutral-500 text-sm mb-8 line-clamp-2 italic leading-relaxed">
+                  "{p.description}"
+                </p>
+                <div className="mt-auto">
+                  <button 
+                    onClick={() => window.open(p.product_url, "_blank")} 
+                    className="w-full bg-white hover:bg-cyan-500 hover:text-white text-black font-black py-5 rounded-2xl flex items-center justify-center gap-3 transition-all uppercase tracking-widest text-xs shadow-2xl active:scale-95"
+                  >
+                    <ShoppingCart className="h-4 w-4" />
+                    View Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
