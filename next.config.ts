@@ -1,64 +1,32 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-// Prevent Vercel production build from failing on TypeScript warnings
-typescript: {
-ignoreBuildErrors: true,
-},
-
-images: {
-qualities: [75, 82, 90, 100], // fixes the "quality 82" warning
-
-```
-remotePatterns: [
-  {
-    protocol: 'https',
-    hostname: 'picsum.photos',
-    port: '',
-    pathname: '/**',
+  // Temporarily allow deploys despite TS warnings (fix types ASAP)
+  typescript: {
+    ignoreBuildErrors: true,
   },
 
-  {
-    protocol: 'https',
-    hostname: '*.aliexpress-media.com',
-    port: '',
-    pathname: '/**',
+  images: {
+    // Explicitly allow these qualities to silence warnings
+    qualities: [75, 82, 90, 100],
+
+    // Remote image sources (e-commerce CDNs + placeholders)
+    remotePatterns: [
+      { protocol: 'https', hostname: 'picsum.photos', pathname: '/**' },
+      { protocol: 'https', hostname: '*.aliexpress-media.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'm.media-amazon.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'images-na.ssl-images-amazon.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'images.amazon.com', pathname: '/**' },
+      // Add more (e.g. Cloudinary, your own S3) as needed
+    ],
   },
 
-  // Amazon main CDN
-  {
-    protocol: 'https',
-    hostname: 'm.media-amazon.com',
-    port: '',
-    pathname: '/**',
+  // Turbopack settings (stable in Next.js 16+)
+  turbopack: {
+    resolveAlias: {
+      '@': './src',           // Root alias — covers @/components, @/lib, etc.
+      // '@/lib': './src/lib' // Usually not needed if @ is set
+    },
   },
-
-  // Amazon alternate CDN
-  {
-    protocol: 'https',
-    hostname: 'images-na.ssl-images-amazon.com',
-    port: '',
-    pathname: '/**',
-  },
-
-  // Some Amazon images also load from this CDN
-  {
-    protocol: 'https',
-    hostname: 'images.amazon.com',
-    port: '',
-    pathname: '/**',
-  },
-],
-```
-
-},
-
-turbopack: {
-resolveAlias: {
-'@': './src',
-'@/lib': './src/lib',
-'@/lib/': './src/lib/',
-},
-},
 };
 
 export default nextConfig;
