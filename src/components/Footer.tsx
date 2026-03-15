@@ -51,15 +51,11 @@ export default function Footer() {
             </li>
 
             <li>
-              <Link
-                href="/disclosure"
-                className="hover:text-cyan-500 transition"
-              >
+              <Link href="/disclosure" className="hover:text-cyan-500 transition">
                 Transparency & Disclosure
               </Link>
             </li>
 
-            {/* Blog placeholder */}
             <li>
               <Link href="/blog" className="hover:text-cyan-500 transition">
                 Shopping Guides (Blog)
@@ -75,7 +71,6 @@ export default function Footer() {
           </h4>
 
           <ul className="space-y-4 text-sm text-neutral-500">
-            {/* Messaging placeholders */}
             <li className="hover:text-cyan-500 transition cursor-pointer">
               WhatsApp Support (Coming Soon)
             </li>
@@ -93,7 +88,6 @@ export default function Footer() {
               </a>
             </li>
 
-            {/* Social placeholders */}
             <li className="hover:text-cyan-500 transition cursor-pointer">
               Facebook
             </li>
@@ -114,6 +108,32 @@ export default function Footer() {
               YouTube
             </li>
           </ul>
+        </div>
+      </div>
+
+      {/* B-BBEE TRUST BADGE */}
+      <div className="max-w-7xl mx-auto px-6 mb-12">
+        <div className="bg-neutral-900 border border-cyan-500/30 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+
+          <div>
+            <p className="text-cyan-400 font-bold text-xs uppercase tracking-widest mb-2">
+              South African Certification
+            </p>
+
+            <h3 className="text-white font-bold text-lg">
+              Level 1 B-BBEE Contributor
+            </h3>
+
+            <p className="text-neutral-400 text-sm">
+              135% Procurement Recognition
+            </p>
+          </div>
+
+          <div className="text-sm text-neutral-400 text-center md:text-right">
+            <p>K2025918368 (South Africa) (Pty) Ltd</p>
+            <p>Certified until Nov 2026</p>
+          </div>
+
         </div>
       </div>
 

@@ -1,276 +1,225 @@
-"use client";
+// components/Navbar.tsx
+'use client';
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { supabase } from "../lib/supabase";
-import { Search, Menu } from "lucide-react";
+import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Menu } from 'lucide-react';
+import { useProfile } from '../hooks/useProfile';
+import { Button } from './ui/Button';
+import { NavLink } from './ui/NavLink';
+import { createPortal } from 'react-dom';
 
-interface UserProfile {
-  id: string;
-  full_name: string;
-  tier?: string;
-}
+// Full list of categories
+const categories = [
+  { name: 'Electronics', slug: 'electronics' },
+  { name: 'Home & Kitchen', slug: 'home-kitchen' },
+  { name: 'Beauty & Personal Care', slug: 'beauty-personal-care' },
+  { name: 'Clothing, Shoes & Jewelry', slug: 'clothing-shoes-jewelry' },
+  { name: 'Health & Household', slug: 'health-household' },
+  { name: 'Sports & Outdoors', slug: 'sports-outdoors' },
+  { name: 'Cell Phones & Accessories', slug: 'cell-phones-accessories' },
+  { name: 'Toys & Games', slug: 'toys-games' },
+  { name: 'Grocery & Gourmet Food', slug: 'grocery-gourmet-food' },
+  { name: 'Baby Products', slug: 'baby-products' },
+  { name: 'Pet Supplies', slug: 'pet-supplies' },
+  { name: 'Office Products', slug: 'office-products' },
+  { name: 'Tools & Home Improvement', slug: 'tools-home-improvement' },
+  { name: 'Automotive', slug: 'automotive' },
+  { name: 'Computers', slug: 'computers' },
+  { name: 'Appliances', slug: 'appliances' },
+  { name: 'Patio, Lawn & Garden', slug: 'patio-lawn-garden' },
+  { name: 'Arts, Crafts & Sewing', slug: 'arts-crafts-sewing' },
+  { name: 'Musical Instruments', slug: 'musical-instruments' },
+  { name: 'Luggage & Travel Gear', slug: 'luggage-travel-gear' },
+  { name: 'Industrial & Scientific', slug: 'industrial-scientific' },
+  { name: 'Collectibles & Fine Art', slug: 'collectibles-fine-art' },
+  { name: 'Handmade', slug: 'handmade' },
+  { name: 'Software', slug: 'software' },
+  { name: 'Books', slug: 'books' },
+  { name: 'Movies & TV', slug: 'movies-tv' },
+  { name: 'CDs & Vinyl', slug: 'cds-vinyl' },
+  { name: 'Gift Cards', slug: 'gift-cards' },
+];
 
 export default function Navbar() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hoverTimer, setHoverTimer] = useState<NodeJS.Timeout | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const { profile, loading, signOut } = useProfile();
 
+  const fullName = (profile?.first_name || profile?.last_name)
+    ? `${profile.first_name ?? ''} ${profile.last_name ?? ''}`.trim()
+    : null;
+
+  // Handle mouse enter on button or menu
+  const handleMouseEnter = () => {
+    if (hoverTimer) clearTimeout(hoverTimer);
+    setIsMenuOpen(true);
+  };
+
+  // Handle mouse leave on button or menu (with delay)
+  const handleMouseLeave = () => {
+    const timer = setTimeout(() => {
+      setIsMenuOpen(false);
+    }, 150); // small delay to allow moving between elements
+    setHoverTimer(timer);
+  };
+
+  // Clear timer on unmount
   useEffect(() => {
-    const getProfile = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (user) {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-
-        if (!error) setProfile(data);
-      }
-
-      setLoadingProfile(false);
+    return () => {
+      if (hoverTimer) clearTimeout(hoverTimer);
     };
+  }, [hoverTimer]);
 
-    getProfile();
-  }, []);
-
-  // Global AI search
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchTerm.trim()) return;
-
-    const event = new CustomEvent("global-search", { detail: searchTerm });
-    window.dispatchEvent(event);
-
-    const aiSection = document.getElementById("ai-assistant-section");
-    if (aiSection) {
-      aiSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
-  const handlePromptClick = (prompt: string) => {
-    setSearchTerm(prompt);
-
-    const event = new CustomEvent("global-search", { detail: prompt });
-    window.dispatchEvent(event);
-
-    const aiSection = document.getElementById("ai-assistant-section");
-    if (aiSection) {
-      aiSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setProfile(null);
-    window.location.reload();
+  // Close menu when a category link is clicked
+  const handleCategoryClick = () => {
+    setIsMenuOpen(false);
+    if (hoverTimer) clearTimeout(hoverTimer);
   };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
-
       <div className="max-w-[1600px] mx-auto px-6 h-22 flex items-center gap-8">
-
-        {/* Browse Menu */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center gap-2 text-base font-semibold hover:text-cyan-400 transition"
+        {/* Browse Button with hover handlers */}
+        <div
+          className="relative"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
-          <Menu size={20} />
-          Browse
-        </button>
+          <button
+            ref={buttonRef}
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md hover:bg-white/10 transition"
+          >
+            <Menu size={20} />
+            Browse
+          </button>
+        </div>
+
+        {/* Mega Menu - rendered via portal */}
+        {isMenuOpen &&
+          createPortal(
+            <div
+              ref={menuRef}
+              className="mega-menu fixed left-0 right-0 top-[88px] bg-black/95 backdrop-blur-xl border-t border-white/10 shadow-2xl z-50"
+              style={{ maxHeight: 'calc(100vh - 88px)', overflowY: 'auto' }}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="max-w-[1600px] mx-auto px-6 py-10">
+                {/* Main grid: Categories (2/3) + Stores & Guides (1/3) */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                  {/* Categories - spans 2 columns */}
+                  <div className="lg:col-span-2">
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-500 mb-6">
+                      Categories
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-4 text-sm">
+                      {categories.map((cat) => (
+                        <NavLink
+                          key={cat.slug}
+                          href={`/category/${cat.slug}`}
+                          className="block py-1 hover:text-cyan-400 transition"
+                          onClick={handleCategoryClick}
+                        >
+                          {cat.name}
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Right column - Stores & Guides */}
+                  <div className="space-y-10">
+                    {/* Stores */}
+                    <div>
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-500 mb-4">
+                        Stores
+                      </h3>
+                      <ul className="space-y-3 text-sm text-neutral-400">
+                        <li>Amazon</li>
+                        <li>AliExpress</li>
+                        <li>Fiverr</li>
+                        <li>eBay</li>
+                        <li>Takealot</li>
+                      </ul>
+                    </div>
+
+                    {/* Guides */}
+                    <div>
+                      <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-500 mb-4">
+                        Guides
+                      </h3>
+                      <ul className="space-y-3 text-sm">
+                        <li>
+                          <NavLink href="/blog" onClick={handleCategoryClick}>
+                            Shopping Guides
+                          </NavLink>
+                        </li>
+                        <li className="text-neutral-500">Product Comparisons</li>
+                        <li className="text-neutral-500">Deal Strategies</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )}
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 shrink-0">
-
           <Image
-  src="/skcs.jpg"
-  alt="SKCS Logo"
-  width={44}
-  height={44}
-  className="object-contain"
-  priority
-/>
-
-
+            src="/skcs.jpg"
+            alt="SKCS Logo"
+            width={44}
+            height={44}
+            className="object-contain"
+            priority
+          />
           <span className="font-black tracking-tighter text-xl uppercase italic hidden lg:block">
             Online Shopping <span className="text-cyan-500">&</span> Booking Centre
           </span>
-
         </Link>
 
         {/* Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-base text-neutral-300">
-
-          <Link href="/deals" className="hover:text-cyan-400 transition">
-            Deals
+        <nav className="hidden lg:flex items-center gap-8">
+          <Link
+            href="/#ai-assistant-section"
+            scroll={false}
+            className="text-neutral-300 hover:text-cyan-400 transition uppercase font-bold"
+          >
+            SKCS AI SHOPPING ASSISTANT
           </Link>
-
-          <Link href="/assistant" className="hover:text-cyan-400 transition">
-            AI Assistant
-          </Link>
-
         </nav>
 
-        {/* Search + AI Prompts */}
-        <div className="flex-1 max-w-xl hidden md:flex flex-col">
-
-          <form onSubmit={handleSearch} className="relative group">
-
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-500 group-focus-within:text-cyan-500 transition-colors" />
-
-            <input
-              type="text"
-              className="w-full bg-white/5 border border-white/10 rounded-full py-3 pl-12 pr-4 text-base text-white focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all"
-              placeholder="Search products, brands or deals..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-
-          </form>
-
-          {/* Smart AI Prompts */}
-          <div className="flex gap-4 mt-2 text-xs text-neutral-500 flex-wrap">
-
-            <span className="text-neutral-400">Try:</span>
-
-            <button
-              onClick={() => handlePromptClick("best gaming laptop under $1500")}
-              className="hover:text-cyan-400 transition"
-            >
-              gaming laptop under $1500
-            </button>
-
-            <button
-              onClick={() => handlePromptClick("cheap wireless earbuds")}
-              className="hover:text-cyan-400 transition"
-            >
-              wireless earbuds
-            </button>
-
-            <button
-              onClick={() => handlePromptClick("best smart TV 2026")}
-              className="hover:text-cyan-400 transition"
-            >
-              smart TV 2026
-            </button>
-
-          </div>
-
-        </div>
-
         {/* Auth Section */}
-        <div className="flex items-center gap-6 shrink-0">
-
-          {loadingProfile ? (
+        <div className="flex items-center gap-6 shrink-0 ml-auto">
+          {loading ? (
             <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
           ) : profile ? (
             <div className="flex items-center gap-4">
-
-              <Link
-                href="/watchlist"
-                className="text-sm text-white font-semibold bg-white/10 px-5 py-2.5 rounded-full hover:bg-cyan-500 hover:text-black transition"
-              >
-                My List
-              </Link>
-
-              <button
-                onClick={handleSignOut}
-                className="text-sm text-neutral-400 hover:text-white underline underline-offset-4"
-              >
+              <span className="text-sm text-neutral-300">Hello {fullName}</span>
+              <Button variant="secondary" size="sm" asChild>
+                <Link href="/watchlist">My List</Link>
+              </Button>
+              <Button variant="link" size="sm" onClick={signOut}>
                 Sign Out
-              </button>
-
+              </Button>
             </div>
           ) : (
-
             <div className="flex items-center gap-4">
-
-              <Link
-                href="/signin"
-                className="text-base font-medium hover:text-cyan-400 transition"
-              >
-                Sign In
-              </Link>
-
-              <Link
-                href="/register"
-                className="bg-white text-black px-6 py-3 rounded-full text-sm font-bold hover:bg-cyan-400 hover:text-white transition shadow-lg"
-              >
-                Join Now
-              </Link>
-
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/signin">Sign In</Link>
+              </Button>
+              <Button variant="primary" size="lg" asChild>
+                <Link href="/register">Join Now</Link>
+              </Button>
             </div>
-
           )}
-
         </div>
-
       </div>
-
-      {/* Marketplace Dropdown */}
-      {menuOpen && (
-        <div className="w-full bg-black border-t border-white/10 shadow-xl">
-
-          <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-3 gap-10">
-
-            {/* Categories */}
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-500 mb-4">
-                Categories
-              </h3>
-
-              <ul className="space-y-3 text-sm">
-                <li><Link href="/category/electronics" className="hover:text-cyan-400">Electronics</Link></li>
-                <li><Link href="/category/fashion" className="hover:text-cyan-400">Fashion</Link></li>
-                <li><Link href="/category/gaming" className="hover:text-cyan-400">Gaming</Link></li>
-                <li><Link href="/category/accessories" className="hover:text-cyan-400">Accessories</Link></li>
-              </ul>
-            </div>
-
-            {/* Stores */}
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-500 mb-4">
-                Stores
-              </h3>
-
-              <ul className="space-y-3 text-sm">
-                <li className="text-neutral-400">Amazon</li>
-                <li className="text-neutral-400">AliExpress</li>
-                <li className="text-neutral-400">Fiverr</li>
-                <li className="text-neutral-400">eBay</li>
-                <li className="text-neutral-400">Takealot</li>
-              </ul>
-            </div>
-
-            {/* Guides */}
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-wider text-cyan-500 mb-4">
-                Guides
-              </h3>
-
-              <ul className="space-y-3 text-sm">
-                <li>
-                  <Link href="/blog" className="hover:text-cyan-400">
-                    Shopping Guides
-                  </Link>
-                </li>
-                <li className="text-neutral-500">Product Comparisons</li>
-                <li className="text-neutral-500">Deal Strategies</li>
-              </ul>
-            </div>
-
-          </div>
-
-        </div>
-      )}
-
     </header>
   );
 }

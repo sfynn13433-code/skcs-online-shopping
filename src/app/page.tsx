@@ -6,11 +6,11 @@ import Link from "next/link";
 import Head from "next/head";
 import { supabase } from "../lib/supabase";
 import AIshoppingAssistant from "../components/AIshoppingAssistant";
-import AIQuickSearch from "../components/AIQuickSearch"; // <-- added import
-import BookingSection from "../components/BookingSection";
+import AIQuickSearch from "../components/AIQuickSearch";
 import Footer from "../components/Footer";
 import FeaturedStores from "../components/FeaturedStores";
-import ProductGrid from "../components/ProductGrid"; // <-- NEW IMPORT
+import NavbarBookings from "../components/NavbarBookings";          // new bookings navbar
+import AIBookingAssistant from "../components/AIBookingAssistant";  // to be built later
 
 interface UserProfile {
   id: string;
@@ -21,15 +21,6 @@ interface UserProfile {
 export default function Home() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
-
-  // Define categories
-  const categories = [
-    { name: "Electronics", slug: "electronics", icon: "💻", count: 12 },
-    { name: "Fashion", slug: "fashion", icon: "👕", count: 8 },
-    { name: "Gaming", slug: "gaming", icon: "🎮", count: 6 },
-    { name: "Other", slug: "other", icon: "📦", count: 15 },
-    { name: "Accessories", slug: "accessories", icon: "🔌", count: 20 },
-  ];
 
   useEffect(() => {
     const getProfile = async () => {
@@ -55,7 +46,7 @@ export default function Home() {
       </Head>
 
       <main className="bg-black min-h-screen text-white">
-        {/* HERO - without search bar */}
+        {/* HERO */}
         <section className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-black">
           <div className="absolute inset-0 z-0">
             <Image
@@ -78,7 +69,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FEATURED STORES SECTION - new */}
         <FeaturedStores />
 
         {/* AI SHOPPING ASSISTANT (scroll target from navbar) */}
@@ -86,10 +76,9 @@ export default function Home() {
           id="ai-assistant-section"
           className="max-w-7xl mx-auto px-6 pt-20 pb-10 scroll-mt-24"
         >
-          {/* AI Intelligence Header */}
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-black tracking-tight uppercase mb-4">
-              AI <span className="text-cyan-500">Shopping Assistant</span>
+              SKCS <span className="text-cyan-500">AI Shopping Assistant</span>
             </h2>
             <p className="text-neutral-400 max-w-2xl mx-auto mb-4">
               Powered by advanced AI models including <span className="text-white">Groq</span>,
@@ -102,82 +91,34 @@ export default function Home() {
             </p>
           </div>
 
-          {/* AI Quick Search Component */}
           <AIQuickSearch />
-
-          {/* AI Assistant Component */}
           <AIshoppingAssistant />
         </section>
 
-        {/* TRAVEL BOOKING SECTION */}
-        <BookingSection />
+        {/* NEW BOOKINGS NAVBAR */}
+        <NavbarBookings />
 
-        {/* SHOP BY CATEGORY */}
-        <section className="max-w-7xl mx-auto px-6 py-10">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="text-3xl font-black tracking-tight uppercase">
-              Shop by <span className="text-cyan-500">Category</span>
+        {/* AI BOOKING ASSISTANT (new section) */}
+        <section className="max-w-7xl mx-auto px-6 pt-10 pb-10">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight uppercase mb-4">
+              SKCS <span className="text-cyan-500">AI Booking Assistant</span>
             </h2>
-            <div className="h-[1px] flex-grow bg-white/10 ml-8 hidden md:block"></div>
+            <p className="text-neutral-400 max-w-2xl mx-auto mb-4">
+              Find the best hotels, flights, car hire, cruises and travel deals
+              worldwide. Our AI scans global booking platforms to help you
+              compare the best options instantly.
+            </p>
+            <p className="text-neutral-500 text-sm max-w-xl mx-auto">
+              Ask for destinations, travel dates or experiences and let the AI
+              generate the best booking options for your trip.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-            {categories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/category/${category.slug}`}
-                className="group bg-neutral-900/40 border border-white/5 rounded-2xl p-8 hover:bg-neutral-900/80 hover:border-cyan-500/50 transition-all duration-300 text-center"
-              >
-                <div className="text-5xl mb-4">{category.icon}</div>
-                <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
-                <p className="text-neutral-500 text-sm">{category.count} products</p>
-                <div className="mt-4 text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                  Browse →
-                </div>
-              </Link>
-            ))}
-          </div>
+          <AIBookingAssistant />
         </section>
 
-        {/* PRODUCT GRID SECTION - NEW */}
-        <section className="max-w-7xl mx-auto px-6 py-10">
-          <div className="flex items-center justify-between mb-12">
-            <h2 className="text-3xl font-black tracking-tight uppercase">
-              Popular <span className="text-cyan-500">Products</span>
-            </h2>
-            <div className="h-[1px] flex-grow bg-white/10 ml-8 hidden md:block"></div>
-          </div>
-          <ProductGrid />
-        </section>
-
-        {/* FEATURED CATEGORY BANNER */}
-        <section className="max-w-7xl mx-auto px-6 py-10">
-          <div className="relative w-full rounded-[2rem] overflow-hidden bg-gradient-to-r from-cyan-900 to-black border border-white/10 p-10 md:p-16 flex flex-col md:flex-row items-center justify-between shadow-2xl">
-            <div className="relative z-10 max-w-xl text-center md:text-left mb-8 md:mb-0">
-              <span className="text-cyan-400 font-bold tracking-widest uppercase text-sm mb-4 block">
-                Featured Category
-              </span>
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
-                Level Up Your Setup
-              </h2>
-              <p className="text-neutral-300 mb-8 text-lg">
-                Compare prices on the latest consoles, accessories, and top-tier PC components from global sellers.
-              </p>
-              <Link
-                href="/category/gaming"
-                className="inline-block bg-cyan-500 text-black px-8 py-4 rounded-xl font-bold uppercase tracking-wider hover:bg-white transition-all shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]"
-              >
-                Shop Gaming
-              </Link>
-            </div>
-            <div className="relative z-10 text-9xl drop-shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500">
-              🎮
-            </div>
-            <div className="absolute right-0 bottom-0 w-96 h-96 bg-cyan-500/20 blur-[100px] rounded-full pointer-events-none"></div>
-          </div>
-        </section>
-
-        {/* ALIEXPRESS DEALS SECTION (expanded) */}
+        {/* ALIEXPRESS DEALS */}
         <section className="py-16 bg-black border-t border-white/10">
           <div className="max-w-7xl mx-auto px-6 text-center">
             <h2 className="text-3xl font-black tracking-tight uppercase mb-4">
@@ -187,9 +128,31 @@ export default function Home() {
               Hand‑picked offers with your exclusive tracking ID. Click, shop, and save!
             </p>
             <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <a href="https://s.click.aliexpress.com/e/_c3ElbFoT" target="_blank" rel="noopener sponsored" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg">Higher Commission</a>
-              <a href="https://s.click.aliexpress.com/e/_c39QWNkL" target="_blank" rel="noopener sponsored" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg">Hot Deals</a>
-              <a href="https://s.click.aliexpress.com/e/_c4PyOiIx" target="_blank" rel="noopener sponsored" className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg">Featured Products</a>
+              {/* CHANGED: now use neutral-800 with cyan hover to match region buttons */}
+              <a 
+                href="https://s.click.aliexpress.com/e/_c3ElbFoT" 
+                target="_blank" 
+                rel="noopener sponsored" 
+                className="bg-neutral-800 hover:bg-cyan-600 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-cyan-500/30"
+              >
+                Higher Commission
+              </a>
+              <a 
+                href="https://s.click.aliexpress.com/e/_c39QWNkL" 
+                target="_blank" 
+                rel="noopener sponsored" 
+                className="bg-neutral-800 hover:bg-cyan-600 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-cyan-500/30"
+              >
+                Hot Deals
+              </a>
+              <a 
+                href="https://s.click.aliexpress.com/e/_c4PyOiIx" 
+                target="_blank" 
+                rel="noopener sponsored" 
+                className="bg-neutral-800 hover:bg-cyan-600 text-white px-8 py-4 rounded-full font-bold text-sm uppercase tracking-wider transition-all shadow-lg border border-cyan-500/30"
+              >
+                Featured Products
+              </a>
             </div>
             <div className="mb-10">
               <h3 className="text-2xl font-bold mb-6 text-cyan-400 flex items-center justify-center gap-2">
@@ -215,7 +178,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SOVRN NETWORK DEALS SECTION */}
+        {/* SOVRN NETWORK DEALS */}
         <section className="py-16 bg-black border-t border-white/10">
           <div className="max-w-7xl mx-auto px-6 text-center">
             <h2 className="text-3xl font-black tracking-tight uppercase mb-4">
@@ -244,7 +207,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* AMAZON TRENDING FINDS SECTION (expanded) */}
+        {/* AMAZON TRENDING FINDS */}
         <section className="py-16 bg-neutral-950 border-t border-white/10">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex items-center justify-between mb-12">
@@ -385,7 +348,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FOOTER - replaced with imported component */}
         <Footer />
       </main>
     </>

@@ -62,7 +62,7 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
           <div className="w-14 h-14 bg-cyan-500 rounded-2xl flex items-center justify-center text-3xl shadow-[0_0_25px_rgba(6,182,212,0.4)]">🤖</div>
           <div>
             <h3 className="text-3xl font-black uppercase tracking-tighter text-white">
-              SKCS <span className="text-cyan-500">AI Assistant</span>
+              SKCS <span className="text-cyan-500">AI Shopping Assistant</span>   {/* 👈 Updated text */}
             </h3>
             <div className="flex items-center gap-2 text-neutral-500 text-[10px] font-bold uppercase tracking-widest mt-1">
               <CheckCircle className="w-3 h-3 text-cyan-500" /> Verified Inventory Only
