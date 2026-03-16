@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { MarketplaceProduct } from "@/lib/marketplaces/types";
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 export interface TrendingProduct extends MarketplaceProduct {
   trendScore: number;
@@ -23,10 +24,9 @@ export async function getTrendingProducts(limit = 20): Promise<TrendingProduct[]
       rating: p.rating,
       image: p.image_url,
       store: p.brand || "Marketplace",
-      productUrl: p.affiliate_url || "#",
-      affiliateUrl: p.affiliate_url || "#",
+      productUrl: ensureAmazonAffiliateTag(p.affiliate_url || "#"),
+      affiliateUrl: ensureAmazonAffiliateTag(p.affiliate_url || "#"),
       trendScore,
     };
   });
 }
-

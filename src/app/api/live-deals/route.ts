@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { useTier } from "@/hooks/useTier";
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 export async function GET() {
   // Tier gating is handled client-side; API returns full set
@@ -14,6 +14,10 @@ export async function GET() {
     return NextResponse.json({ deals: [] });
   }
 
-  return NextResponse.json({ deals: data || [] });
-}
+  const sanitizedDeals = (data || []).map((deal) => ({
+    ...deal,
+    affiliate_url: ensureAmazonAffiliateTag(deal.affiliate_url),
+  }));
 
+  return NextResponse.json({ deals: sanitizedDeals });
+}

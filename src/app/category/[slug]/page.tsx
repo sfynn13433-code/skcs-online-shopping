@@ -2,6 +2,7 @@
 import { createServerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
+import { buildTrackedAffiliateLink } from '@/services/affiliateLinks'
 
 const categoryNameMap: Record<string, string> = {
   electronics: 'Electronics',
@@ -130,10 +131,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                   </h3>
                   
                   <div className="mt-auto">
-                    <a 
-                      href={product.affiliate_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
+                    <a
+                      href={buildTrackedAffiliateLink({
+                        url: product.affiliate_url,
+                        title: product.title,
+                        store: product.store,
+                        productId: product.id,
+                      })}
                       className="block w-full bg-white text-black text-center py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-cyan-500 hover:text-white transition-all active:scale-95"
                     >
                       Secure Item

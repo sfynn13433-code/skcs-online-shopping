@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 export const maxDuration = 30;
 
@@ -119,7 +120,7 @@ ${productList}`;
         price: p.price,
         image: p.image_url, 
         description: p.product_group || p.category,
-        product_url: p.affiliate_url 
+        product_url: ensureAmazonAffiliateTag(p.affiliate_url), 
       }));
 
     return NextResponse.json({

@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { MarketplaceProduct } from "@/lib/marketplaces/types";
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 export async function getRecommendations(userId?: string, limit = 12): Promise<MarketplaceProduct[]> {
   if (!userId) return [];
@@ -28,9 +29,8 @@ export async function getRecommendations(userId?: string, limit = 12): Promise<M
       rating: p.rating,
       image: p.image_url,
       store: p.brand || "Marketplace",
-      productUrl: p.affiliate_url || "#",
-      affiliateUrl: p.affiliate_url || "#",
+      productUrl: ensureAmazonAffiliateTag(p.affiliate_url || "#"),
+      affiliateUrl: ensureAmazonAffiliateTag(p.affiliate_url || "#"),
     })) || []
   );
 }
-

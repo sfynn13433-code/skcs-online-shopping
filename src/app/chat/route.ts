@@ -4,6 +4,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 import { createCohere } from "@ai-sdk/cohere";
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js"; 
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 export const maxDuration = 30;
 
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
       brand: p.brand || "SKCS Verified",
       price: p.price,
       image: p.image_url, // Maps to your UI
-      product_url: p.affiliate_url, // Maps to your UI
+      product_url: ensureAmazonAffiliateTag(p.affiliate_url || "#"), // Maps to your UI
       description: p.product_group || p.category 
     }));
 

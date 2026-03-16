@@ -8,6 +8,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { rankProducts } from "@/ai/productRanking";
 import { detectDeals } from "@/ai/dealDetector";
 import { useTier } from "@/hooks/useTier";
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 const BRANDS = ["Apple", "Samsung", "Dell", "HP", "Lenovo", "Sony", "Asus", "Acer"];
 const LOCATIONS = ["United States", "South Africa", "Europe", "Global"];
@@ -111,7 +112,7 @@ function ProductsClientInner() {
           image: p.image_url,
           store: p.brand,
           shippingLocation: undefined,
-          affiliateUrl: p.affiliate_url || "#",
+          affiliateUrl: ensureAmazonAffiliateTag(p.affiliate_url || "#"),
         })) || [];
 
       const avgPrice = mapped.length ? mapped.reduce((s, p) => s + (p.price || 0), 0) / mapped.length : 0;

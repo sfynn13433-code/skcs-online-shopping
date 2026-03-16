@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -63,7 +64,7 @@ export async function GET() {
           price: formatPrice(offer?.price ?? null),
           store: offer?.store ?? "Marketplace",
           image: product.image ?? "/placeholder-product.png",
-          affiliate_url: offer?.affiliate_url ?? "#",
+          affiliate_url: ensureAmazonAffiliateTag(offer?.affiliate_url ?? "#"),
           category: product.category ?? "Other",
         };
       }) || [];

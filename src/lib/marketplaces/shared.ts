@@ -1,5 +1,6 @@
 import { supabase } from "../supabase";
 import { MarketplaceProduct } from "./types";
+import { ensureAmazonAffiliateTag } from "@/services/affiliateLinks";
 
 export async function fetchStoreProducts(
   store: string,
@@ -20,10 +21,9 @@ export async function fetchStoreProducts(
     rating: p.rating,
     image: p.image_url,
     store: p.store || store,
-    productUrl: p.product_url || p.affiliate_url || "#",
-    affiliateUrl: p.affiliate_url || p.product_url || "#",
+    productUrl: ensureAmazonAffiliateTag(p.product_url || p.affiliate_url || "#"),
+    affiliateUrl: ensureAmazonAffiliateTag(p.affiliate_url || p.product_url || "#"),
     reviewCount: (p as any).review_count ?? null,
     popularity: (p as any).popularity ?? null,
   }));
 }
-

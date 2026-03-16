@@ -16,6 +16,9 @@ import dynamic from "next/dynamic";
 const DiscoveryFeed = dynamic(() => import("../components/DiscoveryFeed"), { ssr: false });
 import PremiumBanner from "../components/PremiumBanner";
 import GlobalPriceGuarantee from "../components/GlobalPriceGuarantee";
+import LiveDealsFeed from "../components/LiveDealsFeed";
+import AutoDealHunter from "../components/AutoDealHunter";
+import AIPriceInsights from "../components/AIPriceInsights";
 
 interface UserProfile {
   id: string;
@@ -76,6 +79,36 @@ export default function Home() {
 
         <GlobalPriceGuarantee />
 
+        <LiveDealsFeed />
+
+        <AutoDealHunter />
+
+        <AIPriceInsights />
+
+        {/* AI SHOPPING ASSISTANT (scroll target from navbar) */}
+        <section
+          id="ai-assistant-section"
+          className="max-w-7xl mx-auto px-6 pt-20 pb-10 scroll-mt-24"
+        >
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight uppercase mb-4">
+              SKCS <span className="text-cyan-500">AI Shopping Assistant</span>
+            </h2>
+            <p className="text-neutral-400 max-w-2xl mx-auto mb-4">
+              Powered by advanced AI models including <span className="text-white">Groq</span>,
+              <span className="text-white"> Gemini</span> and <span className="text-white">DeepSeek</span>.
+              Compare products across global marketplaces instantly and discover the best deals.
+            </p>
+            <p className="text-neutral-500 text-sm max-w-xl mx-auto">
+              Ask the assistant to compare prices, analyse value, or find the best
+              products from Amazon, AliExpress, Takealot and other international stores.
+            </p>
+          </div>
+
+          <AIQuickSearch />
+          <AIshoppingAssistant />
+        </section>
+
         {/* GLOBAL CTA STRIPS */}
         <section className="bg-gradient-to-r from-cyan-900/50 to-blue-900/40 border-y border-white/10 py-10">
           <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -106,30 +139,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-        </section>
-
-        {/* AI SHOPPING ASSISTANT (scroll target from navbar) */}
-        <section
-          id="ai-assistant-section"
-          className="max-w-7xl mx-auto px-6 pt-20 pb-10 scroll-mt-24"
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight uppercase mb-4">
-              SKCS <span className="text-cyan-500">AI Shopping Assistant</span>
-            </h2>
-            <p className="text-neutral-400 max-w-2xl mx-auto mb-4">
-              Powered by advanced AI models including <span className="text-white">Groq</span>,
-              <span className="text-white"> Gemini</span> and <span className="text-white">DeepSeek</span>.
-              Compare products across global marketplaces instantly and discover the best deals.
-            </p>
-            <p className="text-neutral-500 text-sm max-w-xl mx-auto">
-              Ask the assistant to compare prices, analyse value, or find the best
-              products from Amazon, AliExpress, Takealot and other international stores.
-            </p>
-          </div>
-
-          <AIQuickSearch />
-          <AIshoppingAssistant />
         </section>
 
         <DiscoveryFeed />

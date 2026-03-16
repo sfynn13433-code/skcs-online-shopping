@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { buildTrackedAffiliateLink } from "@/services/affiliateLinks";
 
 interface Product {
   id: number;
@@ -80,9 +81,12 @@ export default function ProductGrid() {
             </div>
 
             <a
-              href={product.affiliate_url}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={buildTrackedAffiliateLink({
+                url: product.affiliate_url,
+                title: product.title,
+                store: product.store,
+                productId: product.id,
+              })}
               className="block text-center bg-black text-white text-sm py-2 rounded hover:bg-gray-800"
             >
               View Deal

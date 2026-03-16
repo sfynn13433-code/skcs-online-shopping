@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { ensureAmazonAffiliateTag } from '@/services/affiliateLinks';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
   let redirectUrl = fallbackUrl;
 
   if (url && url !== '#') {
-    redirectUrl = url;
+    redirectUrl = ensureAmazonAffiliateTag(url);
     // Ensure protocol (if missing, prepend https://)
     if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
       redirectUrl = 'https://' + redirectUrl;

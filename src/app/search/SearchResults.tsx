@@ -4,6 +4,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { buildTrackedAffiliateLink } from '@/services/affiliateLinks';
 
 interface Product {
   id: number;
@@ -59,8 +60,12 @@ export default function SearchResults() {
               )}
             </div>
             <a
-              href={product.affiliate_url}
-              target="_blank"
+              href={buildTrackedAffiliateLink({
+                url: product.affiliate_url,
+                title: product.title,
+                store: product.store,
+                productId: product.id,
+              })}
               className="block mt-3 bg-blue-600 text-white text-center py-1 rounded hover:bg-blue-700"
             >
               View Deal

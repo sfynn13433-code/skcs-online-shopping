@@ -12,6 +12,7 @@ interface PredictionResponse {
   predicted_price?: number;
   confidence?: number;
   window_days?: number;
+  advisory?: string;
 }
 
 export default function PricePredictionCard({ productId, currentPrice }: Props) {
@@ -34,10 +35,10 @@ export default function PricePredictionCard({ productId, currentPrice }: Props) 
 
   const message =
     prediction.prediction === "drop"
-      ? `Price may drop to $${prediction.predicted_price} within ${prediction.window_days} days.`
+      ? `Price may drop toward $${prediction.predicted_price} within ${prediction.window_days} days.`
       : prediction.prediction === "rise"
-      ? `Price may rise to $${prediction.predicted_price} within ${prediction.window_days} days.`
-      : "Price is likely to stay stable.";
+      ? `Price may increase toward $${prediction.predicted_price} within ${prediction.window_days} days.`
+      : "Price looks stable based on recent history.";
 
   return (
     <div className="bg-neutral-900/60 border border-white/10 rounded-2xl p-4 space-y-2">
@@ -46,9 +47,8 @@ export default function PricePredictionCard({ productId, currentPrice }: Props) 
       <p className="text-white text-sm">{message}</p>
       <p className={`text-xs font-semibold ${color}`}>Confidence: {confidence}%</p>
       <p className="text-xs text-neutral-500">
-        AI suggests waiting or buying based on trends; prices are not guaranteed and can change.
+        {prediction.advisory || "Predictions are estimates based on historical data."}
       </p>
     </div>
   );
 }
-

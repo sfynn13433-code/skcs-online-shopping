@@ -25,7 +25,7 @@ export default function LiveDealsFeed() {
       .finally(() => setLoading(false));
   }, []);
 
-  const visibleDeals = tier === "premium" ? deals.slice(0, 20) : deals.slice(0, 6);
+  const visibleDeals = tier === "premium" ? deals.slice(0, 25) : deals.slice(0, 3);
 
   return (
     <section className="max-w-7xl mx-auto px-6 py-12">
@@ -39,7 +39,7 @@ export default function LiveDealsFeed() {
           href="/pricing"
           className="text-sm text-cyan-400 hover:text-cyan-200 underline"
         >
-          Premium unlocks more deals
+          Premium unlocks more deals & real-time alerts
         </Link>
       </div>
 
@@ -56,7 +56,14 @@ export default function LiveDealsFeed() {
                 <div className="w-full h-full flex items-center justify-center text-neutral-700">No image</div>
               )}
             </div>
-            <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">{deal.store}</p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs uppercase tracking-[0.25em] text-neutral-500">{deal.store}</p>
+              {tier === "premium" && (
+                <span className="text-[10px] px-2 py-1 rounded-full bg-yellow-400 text-black font-semibold">
+                  ⭐ Premium AI Insight
+                </span>
+              )}
+            </div>
             <h4 className="text-lg font-semibold line-clamp-2 mb-2">{deal.product_title}</h4>
             <div className="flex items-center gap-2 mb-3">
               <span className="px-3 py-1 rounded-full bg-red-500 text-black text-xs font-bold">
@@ -77,11 +84,11 @@ export default function LiveDealsFeed() {
         ))}
       </div>
 
-      {tier === "normal" && deals.length > 6 && (
+      {tier === "normal" && deals.length > 3 && (
         <div className="mt-6 bg-neutral-900 border border-cyan-500/40 text-white rounded-2xl p-4 flex items-center justify-between">
           <div>
             <p className="font-semibold">Unlock more live deals with SKCS Premium.</p>
-            <p className="text-sm text-neutral-400">See up to 20 live deals and hidden offers.</p>
+            <p className="text-sm text-neutral-400">See up to 25 live deals, faster refresh, and AI alerts.</p>
           </div>
           <Link
             href="/pricing"
@@ -94,4 +101,3 @@ export default function LiveDealsFeed() {
     </section>
   );
 }
-
