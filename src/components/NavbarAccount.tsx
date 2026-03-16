@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createClient } from "@supabase/supabase-js"
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 type Profile = {
   first_name: string | null
@@ -10,8 +15,6 @@ type Profile = {
 }
 
 export default function NavbarAccount() {
-
-  const supabase = createClientComponentClient()
 
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
@@ -47,7 +50,7 @@ export default function NavbarAccount() {
 
     loadUser()
 
-  }, [supabase])
+  }, [])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()

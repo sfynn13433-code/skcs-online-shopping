@@ -16,6 +16,16 @@ const connectSrc = [
   "https://*.supabase.co",
   "https://iyowygnnygzodueirxys.supabase.co",
   "https://vitals.vercel-insights.com",
+  "https://*.amazon.com",
+  "https://*.aliexpress.com",
+  "https://*.ebay.com",
+  "https://*.walmart.com",
+  "https://*.takealot.com",
+  "https://*.booking.com",
+  "https://*.expedia.com",
+  "https://*.hotels.com",
+  "https://*.agoda.com",
+  "https://*.sovrn.co",
 ];
 
 const securityHeaders = [
@@ -71,6 +81,18 @@ const securityHeaders = [
     key: "Upgrade-Insecure-Requests",
     value: "1",
   },
+  {
+    key: "X-Permitted-Cross-Domain-Policies",
+    value: "none",
+  },
+  {
+    key: "Expect-CT",
+    value: "max-age=0",
+  },
+  {
+    key: "X-XSS-Protection",
+    value: "0",
+  },
 ];
 
 const nextConfig: NextConfig = {
@@ -96,6 +118,16 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // Performance optimizations
+  compress: true,
+  
+  poweredByHeader: false,
+  
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', '@headlessui/react'],
+  },
+
   // Turbopack settings (stable in Next.js 16+)
   turbopack: {
     resolveAlias: {
@@ -109,6 +141,24 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: securityHeaders,
+      },
+      {
+        source: "/_next/static/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/images/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
       },
     ];
   },
