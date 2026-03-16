@@ -6,6 +6,7 @@ export async function GET(request: Request) {
   const title = searchParams.get('title');
   const store = searchParams.get('store');
   const url = searchParams.get('url');
+  const productId = searchParams.get('productId');
 
   // Default fallback URL (homepage)
   const fallbackUrl = new URL('/', request.url).toString();
@@ -17,12 +18,12 @@ export async function GET(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // Insert into the correct table: click_analytics
-    await supabase.from('click_analytics').insert({
-      product_title: title || 'Unknown',
-      store_name: store || 'Unknown',
+    await supabase.from('affiliate_clicks').insert({
+      product_or_booking: title || 'Unknown',
+      partner: store || 'Unknown',
+      product_id: productId || null,
       original_link: url || fallbackUrl,
-      clicked_at: new Date(), // will be converted to ISO string
+      clicked_at: new Date(),
     });
   } catch (err) {
     // Log error but continue – we still want to redirect the user

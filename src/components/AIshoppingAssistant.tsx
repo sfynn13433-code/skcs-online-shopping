@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Loader2, ShoppingCart, CheckCircle, Info, Cpu, Package } from "lucide-react";
+import { useTier } from "../hooks/useTier";
 
 interface Product {
   id: string;
@@ -19,6 +20,7 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
   const [reply, setReply] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [model, setModel] = useState("");
+  const { tier } = useTier();
 
   const searchAI = async (override?: string) => {
     const target = override || query;
@@ -37,7 +39,8 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
 
       const data = await res.json();
       setReply(data.reply);
-      setProducts(data.products || []);
+      const incoming = data.products || [];
+      setProducts(tier === "premium" ? incoming : incoming.slice(0, 5));
       setModel(data.modelUsed || "Core Intelligence");
     } catch (e) {
       setReply("Connection failed. Please check your network.");
@@ -113,7 +116,7 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
 
         {/* PRODUCT GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {products.map((p) => (
+          {(tier === "premium" ? products : products.slice(0, 5)).map((p) => (
             <div key={p.id} className="group bg-neutral-950/80 border border-white/5 rounded-[2.5rem] p-7 hover:border-cyan-500/40 transition-all flex flex-col shadow-2xl">
               <div className="relative h-64 bg-neutral-900 rounded-3xl mb-6 overflow-hidden shadow-inner">
                 {p.image ? (
@@ -154,6 +157,12 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
             </div>
           ))}
         </div>
+
+        {tier === "normal" && products.length > 5 && (
+          <div className="mt-8 bg-neutral-900 border border-cyan-500/40 text-white rounded-2xl p-4">
+            Upgrade to SKCS Premium to see hidden deals and unlimited results.
+          </div>
+        )}
       </div>
     </div>
   );

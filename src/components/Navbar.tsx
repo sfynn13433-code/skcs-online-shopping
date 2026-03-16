@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu } from 'lucide-react';
 import { useProfile } from '../hooks/useProfile';
+import { useTier } from '../hooks/useTier';
 import { Button } from './ui/Button';
 import { NavLink } from './ui/NavLink';
 import { createPortal } from 'react-dom';
@@ -48,6 +49,7 @@ export default function Navbar() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const { profile, loading, signOut } = useProfile();
+  const { tier } = useTier();
 
   const fullName = (profile?.first_name || profile?.last_name)
     ? `${profile.first_name ?? ''} ${profile.last_name ?? ''}`.trim()
@@ -192,10 +194,22 @@ export default function Navbar() {
           >
             SKCS AI SHOPPING ASSISTANT
           </Link>
+          <Link href="/products" className="text-neutral-300 hover:text-cyan-400 transition font-semibold">
+            Products
+          </Link>
+          <Link href="/bookings" className="text-neutral-300 hover:text-cyan-400 transition font-semibold">
+            Bookings
+          </Link>
+          <Link href="/pricing" className="text-neutral-300 hover:text-cyan-400 transition font-semibold">
+            Pricing
+          </Link>
         </nav>
 
         {/* Auth Section */}
         <div className="flex items-center gap-6 shrink-0 ml-auto">
+          <span className="text-xs px-3 py-1 rounded-full border border-cyan-500/40 text-cyan-300">
+            {tier === 'premium' ? '⭐ Premium' : 'Free'}
+          </span>
           {loading ? (
             <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
           ) : profile ? (

@@ -11,6 +11,11 @@ import Footer from "../components/Footer";
 import FeaturedStores from "../components/FeaturedStores";
 import NavbarBookings from "../components/NavbarBookings";          // new bookings navbar
 import AIBookingAssistant from "../components/AIBookingAssistant";  // to be built later
+import dynamic from "next/dynamic";
+
+const DiscoveryFeed = dynamic(() => import("../components/DiscoveryFeed"), { ssr: false });
+import PremiumBanner from "../components/PremiumBanner";
+import GlobalPriceGuarantee from "../components/GlobalPriceGuarantee";
 
 interface UserProfile {
   id: string;
@@ -69,7 +74,39 @@ export default function Home() {
           </div>
         </section>
 
-        <FeaturedStores />
+        <GlobalPriceGuarantee />
+
+        {/* GLOBAL CTA STRIPS */}
+        <section className="bg-gradient-to-r from-cyan-900/50 to-blue-900/40 border-y border-white/10 py-10">
+          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-8 rounded-3xl bg-black/60 border border-white/10 shadow-xl">
+              <p className="text-xs uppercase tracking-[0.25em] text-cyan-400 mb-2">Meta-marketplace</p>
+              <h3 className="text-2xl font-black mb-3">SKCS Global Product Marketplace</h3>
+              <p className="text-neutral-400 mb-6">
+                Compare Amazon, eBay, Walmart, AliExpress, and Takealot in one AI-powered interface.
+              </p>
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-black font-semibold hover:bg-cyan-500 hover:text-white transition"
+              >
+                Explore Products
+              </Link>
+            </div>
+            <div className="p-8 rounded-3xl bg-black/60 border border-white/10 shadow-xl">
+              <p className="text-xs uppercase tracking-[0.25em] text-cyan-400 mb-2">Travel & booking</p>
+              <h3 className="text-2xl font-black mb-3">SKCS Travel & Booking Marketplace</h3>
+              <p className="text-neutral-400 mb-6">
+                Search hotels, flights, and cars across Expedia, Booking.com, Hotels.com, Agoda, and RentalCars.
+              </p>
+              <Link
+                href="/bookings"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-black font-semibold hover:bg-cyan-500 hover:text-white transition"
+              >
+                Search Travel Deals
+              </Link>
+            </div>
+          </div>
+        </section>
 
         {/* AI SHOPPING ASSISTANT (scroll target from navbar) */}
         <section
@@ -94,6 +131,12 @@ export default function Home() {
           <AIQuickSearch />
           <AIshoppingAssistant />
         </section>
+
+        <DiscoveryFeed />
+
+        <FeaturedStores />
+
+        <PremiumBanner />
 
         {/* NEW BOOKINGS NAVBAR */}
         <NavbarBookings />

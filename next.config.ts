@@ -16,6 +16,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'm.media-amazon.com', pathname: '/**' },
       { protocol: 'https', hostname: 'images-na.ssl-images-amazon.com', pathname: '/**' },
       { protocol: 'https', hostname: 'images.amazon.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'unsplash.com', pathname: '/**' },
       // Add more (e.g. Cloudinary, your own S3) as needed
     ],
   },

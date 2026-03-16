@@ -4,9 +4,11 @@ export type BookingType = "hotel" | "flight" | "car" | "package";
 
 // 🔁 Replace these with your actual affiliate IDs
 export const AFFILIATE_IDS = {
-  expedia: "YOUR_EXPEDIA_AFFILIATE_ID",      // e.g., "12345"
-  booking: "YOUR_BOOKING_AFFILIATE_ID",      // e.g., "67890"
-  travelpayouts: "YOUR_TRAVELPAYOUTS_ID",    // e.g., "abcde"
+  expedia: process.env.EXPEDIA_AFFILIATE_ID || "YOUR_EXPEDIA_AFFILIATE_ID",
+  booking: process.env.BOOKING_AFFILIATE_ID || "YOUR_BOOKING_AFFILIATE_ID",
+  travelpayouts: process.env.TRAVELPAYOUTS_ID || "YOUR_TRAVELPAYOUTS_ID",
+  agoda: process.env.AGODA_AFFILIATE_ID || "YOUR_AGODA_AFFILIATE_ID",
+  hotels: process.env.HOTELS_AFFILIATE_ID || "YOUR_HOTELS_AFFILIATE_ID",
 };
 
 /**
@@ -34,6 +36,14 @@ export function buildBookingLink(destination: string) {
   return `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(
     destination
   )}&aid=${AFFILIATE_IDS.booking}`;
+}
+
+export function buildAgodaLink(destination: string) {
+  return `https://www.agoda.com/search?city=${encodeURIComponent(destination)}&cid=${AFFILIATE_IDS.agoda}`;
+}
+
+export function buildHotelsLink(destination: string) {
+  return `https://www.hotels.com/search.do?destination=${encodeURIComponent(destination)}&affcid=${AFFILIATE_IDS.hotels}`;
 }
 
 /**

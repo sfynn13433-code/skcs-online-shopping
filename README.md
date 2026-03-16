@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SKCS Online Shopping & Booking Centre
 
-## Getting Started
+Production-ready Next.js 14 (App Router) marketplace that aggregates global retail + travel partners with AI-assisted search.
 
-First, run the development server:
+## Stack
+- Next.js 14 + TypeScript + TailwindCSS (App Router, RSC where possible)
+- Supabase (Postgres, Auth, logging)
+- AI waterfall (Groq / Gemini / DeepSeek / etc.) for curated product matches
+- Vercel for hosting
 
+## Key Features
+- Product marketplace search with filters (brand, price, rating, shipping).
+- Booking search page with affiliate-ready redirects (Expedia, Booking.com, car rentals).
+- AI Shopping Assistant and AI Booking Assistant.
+- Affiliate click tracking endpoint (`/api/track-click`).
+- Supabase schema for users, saved items, search logs, affiliate clicks, product catalog.
+- Multi-marketplace adapters (Amazon, eBay, Walmart, AliExpress, Takealot) and booking adapters (Expedia, Booking.com, Agoda, Hotels.com, RentalCars).
+- AI ranking with deal scores and badges.
+
+## Running locally
+1) Install deps  
+```bash
+npm install
+```
+2) Copy envs  
+```bash
+cp .env.example .env.local
+```
+Fill Supabase keys, AI provider keys, and affiliate IDs.
+
+3) Start dev server  
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4) Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Supabase
+- Schema lives in `supabase/schema.sql`. Apply via SQL editor or `supabase db push`.
+- Tables: `users` (tier + subscription_status), `saved_items`, `search_logs`, `affiliate_clicks`, `products`, `bookings_cache`, `price_history`, `user_activity`.
+- RLS templates included (enable and tune as needed).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment (Vercel)
+- Add env vars in Vercel dashboard:
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY` (server routes only)
+  - Affiliate + AI provider keys (`AMAZON_AFFILIATE_TAG`, `EXPEDIA_AFFILIATE_ID`, `BOOKING_AFFILIATE_ID`, `AGODA_AFFILIATE_ID`, `HOTELS_AFFILIATE_ID`, `TRAVELPAYOUTS_ID`)
+- Run `npm run build` locally to verify.
+- Connect GitHub repo to Vercel and deploy the main branch.
 
-## Learn More
+## Project Structure
+```
+src/
+  app/           // routes (products, bookings, api routes)
+  components/    // UI building blocks
+  lib/           // Supabase + affiliate helpers
+  ai/            // deterministic query parser
+supabase/schema.sql
+.env.example
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- Use `/api/ai/parse-query` to turn natural language into structured product/booking search params.
+- `/products` and `/bookings` are affiliate-ready and loggable via Supabase.
