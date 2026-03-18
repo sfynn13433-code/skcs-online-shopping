@@ -20,6 +20,7 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
   const [reply, setReply] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [model, setModel] = useState("");
+  const [platformUrl, setPlatformUrl] = useState<string>("");
   const { tier } = useTier();
 
   const searchAI = async (override?: string) => {
@@ -29,6 +30,7 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
     setLoading(true);
     setReply("");
     setProducts([]);
+    setPlatformUrl("");
 
     try {
       const res = await fetch("/api/ai-shopping", {
@@ -42,6 +44,7 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
       const incoming = data.products || [];
       setProducts(tier === "premium" ? incoming : incoming.slice(0, 5));
       setModel(data.modelUsed || "Core Intelligence");
+      setPlatformUrl(data.platformUrl || "");
     } catch (e) {
       setReply("Connection failed. Please check your network.");
     } finally {
@@ -110,7 +113,18 @@ export default function AIshoppingAssistant({ initialQuery = "" }: { initialQuer
               <Info className="w-4 h-4 text-cyan-400" />
               <h2 className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">AI Concierge Analysis</h2>
             </div>
-            <p className="text-gray-100 text-xl font-medium italic leading-relaxed">"{reply}"</p>
+            <p className="text-gray-100 text-xl font-medium italic leading-relaxed whitespace-pre-line">{reply}</p>
+
+            {platformUrl && (
+              <div className="mt-6">
+                <button
+                  onClick={() => (window.location.href = platformUrl)}
+                  className="bg-cyan-500 text-black font-black px-8 py-4 rounded-2xl shadow-xl hover:bg-cyan-400 transition-all uppercase tracking-widest text-xs active:scale-95"
+                >
+                  Compare Prices
+                </button>
+              </div>
+            )}
           </div>
         )}
 
