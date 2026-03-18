@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { LocaleProvider } from "../components/LocaleProvider";
 
 export const metadata = {
   metadataBase: new URL("https://www.skcs.co.za"),
@@ -21,6 +22,16 @@ export const metadata = {
 
   alternates: {
     canonical: "/",
+    languages: {
+      en: "/",
+      fr: "/",
+      es: "/",
+      de: "/",
+      pt: "/",
+      ja: "/",
+      zh: "/",
+      ar: "/",
+    },
   },
 
   openGraph: {
@@ -31,7 +42,7 @@ export const metadata = {
     siteName: "SKCS Online Shopping",
     images: [
       {
-        url: "/hero.jpg",
+        url: "/images/hero-image.jpg",
         width: 1200,
         height: 630,
         alt: "SKCS Online Shopping Marketplace",
@@ -46,7 +57,7 @@ export const metadata = {
     title: "SKCS Online Shopping",
     description:
       "AI-powered product comparison across global marketplaces.",
-    images: ["/hero.jpg"],
+    images: ["/images/hero-image.jpg"],
   },
 };
 
@@ -58,11 +69,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
+        <LocaleProvider>
+          <Navbar />
 
-        <main className="pt-20">
-          {children}
-        </main>
+          <main className="pt-20">
+            {children}
+          </main>
+        </LocaleProvider>
 
         {/* Organization Schema */}
         <script

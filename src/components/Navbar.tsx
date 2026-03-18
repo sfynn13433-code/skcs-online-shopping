@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Menu } from 'lucide-react';
 import { useProfile } from '../hooks/useProfile';
 import { useTier } from '../hooks/useTier';
+import { useLocale } from './LocaleProvider';
 import { Button } from './ui/Button';
 import { NavLink } from './ui/NavLink';
 import { createPortal } from 'react-dom';
@@ -50,6 +51,9 @@ export default function Navbar() {
   const menuRef = useRef<HTMLDivElement>(null);
   const { profile, loading, signOut } = useProfile();
   const { tier } = useTier();
+  const { language, setLanguage, languageOptions } = useLocale();
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const languageRef = useRef<HTMLDivElement>(null);
 
   const fullName = (profile?.first_name || profile?.last_name)
     ? `${profile.first_name ?? ''} ${profile.last_name ?? ''}`.trim()
@@ -75,6 +79,19 @@ export default function Navbar() {
       if (hoverTimer) clearTimeout(hoverTimer);
     };
   }, [hoverTimer]);
+
+  useEffect(() => {
+    const onMouseDown = (event: MouseEvent) => {
+      if (!isLanguageOpen) return;
+      const target = event.target as Node | null;
+      if (target && languageRef.current && !languageRef.current.contains(target)) {
+        setIsLanguageOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', onMouseDown);
+    return () => document.removeEventListener('mousedown', onMouseDown);
+  }, [isLanguageOpen]);
 
   // Close menu when a category link is clicked
   const handleCategoryClick = () => {
@@ -173,7 +190,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 shrink-0">
           <Image
-            src="/skcs.jpg"
+            src="/images/skcs-logo.png"
             alt="SKCS Logo"
             width={44}
             height={44}
@@ -207,6 +224,41 @@ export default function Navbar() {
 
         {/* Auth Section */}
         <div className="flex items-center gap-6 shrink-0 ml-auto">
+          <div className="relative" ref={languageRef}>
+            <button
+              type="button"
+              onClick={() => setIsLanguageOpen((v) => !v)}
+              className="flex items-center gap-2 text-xs px-3 py-1 rounded-full border border-white/15 text-neutral-200 hover:bg-white/10 transition"
+              aria-haspopup="menu"
+              aria-expanded={isLanguageOpen}
+            >
+              <span aria-hidden>🌍</span>
+              <span className="font-bold uppercase">{language.toUpperCase()}</span>
+              <span className="text-neutral-400" aria-hidden>▼</span>
+            </button>
+
+            {isLanguageOpen && (
+              <div className="absolute right-0 mt-2 w-44 rounded-xl border border-white/10 bg-black/95 backdrop-blur-xl shadow-2xl overflow-hidden">
+                <div className="py-1">
+                  {languageOptions.map((opt) => (
+                    <button
+                      key={opt.code}
+                      type="button"
+                      onClick={() => {
+                        setLanguage(opt.code);
+                        setIsLanguageOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-white/10 transition ${
+                        opt.code === language ? 'text-cyan-400 font-bold' : 'text-neutral-200'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
           <span className="text-xs px-3 py-1 rounded-full border border-cyan-500/40 text-cyan-300">
             {tier === 'premium' ? '⭐ Premium' : 'Free'}
           </span>

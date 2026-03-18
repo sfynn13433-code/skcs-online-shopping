@@ -67,6 +67,11 @@ export async function middleware(req: NextRequest) {
   }
 
   const res = NextResponse.next();
+  const country = req.geo?.country || "US";
+  res.cookies.set("user_country", country, {
+    path: "/",
+    sameSite: "lax",
+  });
   res.headers.set("X-RateLimit-Limit", RATE_LIMIT.toString());
   res.headers.set("X-RateLimit-Remaining", limitResult.remaining.toString());
   res.headers.set("X-RateLimit-Reset", Math.ceil((limitResult.reset - Date.now()) / 1000).toString());
